@@ -27,3 +27,4 @@ export interface RedditPost {
   selftext?: string;
   link_flair_text?: string;
 }
+

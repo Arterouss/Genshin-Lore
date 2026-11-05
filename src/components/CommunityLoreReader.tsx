@@ -244,3 +244,4 @@ export default function CommunityLoreReader({ slug, initialLore }: CommunityLore
     </article>
   );
 }
+

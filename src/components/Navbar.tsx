@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Menu, X, PlusCircle, Users } from "lucide-react";
+import { Sparkles, Menu, X, PlusCircle } from "lucide-react";
 import { useState } from "react";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const NAV_LINKS = [
   { label: "Beranda", href: "/" },
@@ -45,8 +46,9 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* CTA Button: Buat Lore */}
+        {/* Desktop actions: Switcher & Buat Lore */}
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSwitcher />
           <Link
             href="/buat-lore"
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 transition-all text-xs shadow-md shadow-gold-400/20"
@@ -56,14 +58,17 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden text-parchment-dim hover:text-gold-300 transition-colors p-2"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle Menu"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
+          <button
+            className="text-parchment-dim hover:text-gold-300 transition-colors p-2"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle Menu"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}

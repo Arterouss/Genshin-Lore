@@ -138,7 +138,7 @@ export default function AdminModerationPage() {
                 required
                 value={pinInput}
                 onChange={(e) => setPinInput(e.target.value)}
-                placeholder="Masukkan PIN (Default: teyvat2026)"
+                placeholder="••••••••"
                 className="w-full px-4 py-3 rounded-xl bg-celestia-950 border border-gold-300/30 text-parchment text-center text-base tracking-widest focus:outline-none focus:border-gold-300"
               />
             </div>
@@ -411,3 +411,4 @@ export default function AdminModerationPage() {
     </div>
   );
 }
+

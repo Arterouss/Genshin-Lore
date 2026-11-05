@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { getApprovedLores, likeLore } from "@/lib/community";
 import { CommunityLore, RedditPost } from "@/types/community";
+import defaultRedditPosts from "@/data/reddit-trending.json";
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<"community" | "reddit">("community");
@@ -28,10 +29,10 @@ export default function CommunityPage() {
   const [selectedTopic, setSelectedTopic] = useState("Semua");
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
-  // State Reddit Tren
-  const [redditPosts, setRedditPosts] = useState<RedditPost[]>([]);
+  // State Reddit Tren (fallback ke arsip teori terpopuler jika koneksi diblokir ISP)
+  const [redditPosts, setRedditPosts] = useState<RedditPost[]>(defaultRedditPosts as RedditPost[]);
   const [loadingReddit, setLoadingReddit] = useState(false);
-  const [redditError, setRedditError] = useState("");
+  const [isUsingArchive, setIsUsingArchive] = useState(false);
 
   // Load karya komunitas
   useEffect(() => {
@@ -67,7 +68,6 @@ export default function CommunityPage() {
 
   const fetchReddit = async () => {
     setLoadingReddit(true);
-    setRedditError("");
     try {
       const res = await fetch("https://www.reddit.com/r/Genshin_Lore/hot.json?limit=25");
       if (!res.ok) throw new Error("Gagal mengambil data dari Reddit");
@@ -75,12 +75,14 @@ export default function CommunityPage() {
       const posts: RedditPost[] = json.data.children
         .filter((child: { data: { stickied: boolean } }) => !child.data.stickied)
         .map((child: { data: RedditPost }) => child.data);
-      setRedditPosts(posts);
-    } catch (err) {
-      console.error(err);
-      setRedditError(
-        "Koneksi ke Reddit r/Genshin_Lore terhambat. Pastikan jaringan internet Anda stabil atau tidak terblokir firewall."
-      );
+      if (posts.length > 0) {
+        setRedditPosts(posts);
+        setIsUsingArchive(false);
+      }
+    } catch {
+      // Jika Reddit diblokir ISP Indonesia atau API membatasi CORS, gunakan arsip tren terpopuler
+      setIsUsingArchive(true);
+      setRedditPosts(defaultRedditPosts as RedditPost[]);
     } finally {
       setLoadingReddit(false);
     }
@@ -327,8 +329,13 @@ export default function CommunityPage() {
         <div className="space-y-6">
           <div className="p-4 rounded-2xl bg-orange-950/20 border border-orange-500/20 text-xs text-orange-200/90 flex items-center justify-between flex-wrap gap-2">
             <span>
-              🔥 Diambil langsung dari komunitas teori terbesar di dunia:{" "}
+              🔥 Diambil dari komunitas teori terbesar di dunia:{" "}
               <strong className="text-orange-400">r/Genshin_Lore</strong> (Reddit).
+              {isUsingArchive && (
+                <span className="ml-2 text-[11px] text-orange-300/80">
+                  (Mode Arsip Teori Pilihan)
+                </span>
+              )}
             </span>
             <button
               onClick={fetchReddit}
@@ -344,16 +351,6 @@ export default function CommunityPage() {
             <div className="text-center py-20 text-parchment-muted text-sm flex items-center justify-center gap-2">
               <RefreshCw size={18} className="animate-spin text-orange-400" />
               Menghubungkan ke Reddit r/Genshin_Lore...
-            </div>
-          ) : redditError ? (
-            <div className="text-center py-16 p-8 rounded-3xl bg-celestia-900/40 border border-rose-500/20 text-rose-300 text-xs space-y-3">
-              <p>{redditError}</p>
-              <button
-                onClick={fetchReddit}
-                className="px-4 py-2 rounded-xl bg-celestia-800 text-parchment border border-gold-300/20 hover:border-gold-300/40"
-              >
-                Coba Lagi
-              </button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -412,3 +409,4 @@ export default function CommunityPage() {
     </div>
   );
 }
+

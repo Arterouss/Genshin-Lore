@@ -306,3 +306,4 @@ export async function uploadCoverImage(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
+

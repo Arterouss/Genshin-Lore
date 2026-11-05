@@ -24,3 +24,4 @@ export default async function Page({ params }: Props) {
   const initialLore = INITIAL_COMMUNITY_LORES.find((item) => item.slug === slug) || null;
   return <CommunityLoreReader slug={slug} initialLore={initialLore} />;
 }
+
