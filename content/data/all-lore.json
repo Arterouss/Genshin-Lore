@@ -1,0 +1,325 @@
+{
+  "scrapedAt": "2026-11-04T01:32:53.527Z",
+  "characters": [
+    {
+      "slug": "character-backstory-venti",
+      "name": "Venti",
+      "region": "Mondstadt",
+      "element": "anemo",
+      "rarity": 5,
+      "readingTime": "10 Menit",
+      "summary": "▌Singer of Skyward Sonnets · Venti\n\nA bard as free as the wind, now residing in the city of dandelions.",
+      "wordCount": 1906
+    },
+    {
+      "slug": "character-backstory-zhongli",
+      "name": "Zhongli",
+      "region": "Liyue",
+      "element": "geo",
+      "rarity": 5,
+      "readingTime": "15 Menit",
+      "summary": "Wangsheng Funeral Parolor's [sic] mysterious consultant. Handsome, elegant, and surpassingly learned.",
+      "wordCount": 2840
+    },
+    {
+      "slug": "character-backstory-raiden-shogun",
+      "name": "Raiden Shogun",
+      "region": "Inazuma",
+      "element": "electro",
+      "rarity": 5,
+      "readingTime": "12 Menit",
+      "summary": "Her Excellency, the Almighty Narukami Ogosho, promised the people of Inazuma an unchanging eternity to last throughout the ages.",
+      "wordCount": 2246
+    },
+    {
+      "slug": "character-backstory-nahida",
+      "name": "Nahida",
+      "region": "Sumeru",
+      "element": "dendro",
+      "rarity": 5,
+      "readingTime": "20 Menit",
+      "summary": "Lesser Lord Kusanali dwelt deep in the Sanctuary of Surasthana. She had never really been in the limelight, nor had she even been mentioned much.",
+      "wordCount": 3824
+    },
+    {
+      "slug": "character-backstory-furina",
+      "name": "Furina",
+      "region": "Fontaine",
+      "element": "hydro",
+      "rarity": 5,
+      "readingTime": "20 Menit",
+      "summary": "Undoubtedly, Furina has been much loved by the people of Fontaine from the moment she became the Hydro Archon.",
+      "wordCount": 3822
+    },
+    {
+      "slug": "character-backstory-mavuika",
+      "name": "Mavuika",
+      "region": "Natlan",
+      "element": "pyro",
+      "rarity": 5,
+      "readingTime": "23 Menit",
+      "summary": "Now, how to introduce her? The bearer of \\\"Kiongozi,\\\" Mavuika, a leader completely worthy of leading the people of Natlan.",
+      "wordCount": 4499
+    },
+    {
+      "slug": "character-backstory-neuvillette",
+      "name": "Neuvillette",
+      "region": "Fontaine",
+      "element": "hydro",
+      "rarity": 5,
+      "readingTime": "15 Menit",
+      "summary": "\\\"Given that our previous behind-the-scenes editorial on the Hydro Archon earned us the honorable epithet of 'tabloid journalism' from our dear Monsieur Neuvillette, this time we'll be focusing on the mysterious Iudex himself. We know little indeed of his true character, and sadly",
+      "wordCount": 2866
+    },
+    {
+      "slug": "character-backstory-albedo",
+      "name": "Albedo",
+      "region": "Mondstadt",
+      "element": "geo",
+      "rarity": 5,
+      "readingTime": "9 Menit",
+      "summary": "Despite his great achievements in the field of alchemy, he does not speak of the nature of things too hastily.",
+      "wordCount": 1715
+    },
+    {
+      "slug": "character-backstory-diluc",
+      "name": "Diluc",
+      "region": "Mondstadt",
+      "element": "pyro",
+      "rarity": 5,
+      "readingTime": "12 Menit",
+      "summary": "▌Master of the Dawn Winery · Diluc\n\nI will keep marching on until dawn.",
+      "wordCount": 2308
+    },
+    {
+      "slug": "character-backstory-kaeya",
+      "name": "Kaeya",
+      "region": "Mondstadt",
+      "element": "cryo",
+      "rarity": 4,
+      "readingTime": "9 Menit",
+      "summary": "Kaeya Alberich is an adopted son to the Ragnvindr Family, the renowned wine tycoon.",
+      "wordCount": 1715
+    },
+    {
+      "slug": "character-backstory-xiao",
+      "name": "Xiao",
+      "region": "Liyue",
+      "element": "anemo",
+      "rarity": 5,
+      "readingTime": "10 Menit",
+      "summary": "The people of Liyue Harbor greatly revere the mighty and illuminated adepti who dwell in Jueyun Karst.",
+      "wordCount": 1984
+    },
+    {
+      "slug": "character-backstory-hu-tao",
+      "name": "Hu Tao",
+      "region": "Liyue",
+      "element": "pyro",
+      "rarity": 5,
+      "readingTime": "16 Menit",
+      "summary": "At first glance, she appears to be a quirky and cheerful girl. No one would think that she is actually the renowned and illustrious Hu Tao.",
+      "wordCount": 3120
+    },
+    {
+      "slug": "character-backstory-ganyu",
+      "name": "Ganyu",
+      "region": "Liyue",
+      "element": "cryo",
+      "rarity": 5,
+      "readingTime": "10 Menit",
+      "summary": "For the Liyue Qixing of the lofty Yujing Terrace, Ganyu is not merely a companion to serve them, but is instead coordinator of the web of information that moves across Liyue Harbor, and the architect of administrative efficiency.",
+      "wordCount": 1930
+    },
+    {
+      "slug": "character-backstory-yelan",
+      "name": "Yelan",
+      "region": "Liyue",
+      "element": "hydro",
+      "rarity": 5,
+      "readingTime": "15 Menit",
+      "summary": "Yelan's identity has always been a mystery.",
+      "wordCount": 2943
+    },
+    {
+      "slug": "character-backstory-kaedehara-kazuha",
+      "name": "Kaedehara Kazuha",
+      "region": "Inazuma",
+      "element": "anemo",
+      "rarity": 5,
+      "readingTime": "14 Menit",
+      "summary": "A wandering samurai from Inazuma with a modest and gentle personality.",
+      "wordCount": 2638
+    },
+    {
+      "slug": "character-backstory-kamisato-ayaka",
+      "name": "Kamisato Ayaka",
+      "region": "Inazuma",
+      "element": "cryo",
+      "rarity": 5,
+      "readingTime": "12 Menit",
+      "summary": "Daughter of the Yashiro Commission's Kamisato Clan from Inazuma. Poised and graceful, noble and virtuous.\n\nWorking in tandem with her elder brother and the current head of the clan, Kamisato Ayato, the siblings divided among themselves different responsibilities arising from thei",
+      "wordCount": 2304
+    },
+    {
+      "slug": "character-backstory-yae-miko",
+      "name": "Yae Miko",
+      "region": "Inazuma",
+      "element": "electro",
+      "rarity": 5,
+      "readingTime": "16 Menit",
+      "summary": "The Grand Narukami Shrine's head shrine maiden and a descendant of Kitsune lineage, Eternity's servant and friend... and the intimidating editor-in-chief of Yae Publishing House, a publisher of light novels.",
+      "wordCount": 3010
+    },
+    {
+      "slug": "character-backstory-wanderer",
+      "name": "Wanderer",
+      "region": "Sumeru",
+      "element": "anemo",
+      "rarity": 5,
+      "readingTime": "18 Menit",
+      "summary": "On a fateful night, a figure arrived at a place that had once been called Tatarasuna. There should no longer have been residents there, but as if destiny had decreed it, a farmer had come there, picking Naku Weed to make a living. Thus it was under the moonlight that he saw a pha",
+      "wordCount": 3552
+    },
+    {
+      "slug": "character-backstory-alhaitham",
+      "name": "Alhaitham",
+      "region": "Sumeru",
+      "element": "dendro",
+      "rarity": 5,
+      "readingTime": "19 Menit",
+      "summary": "The current scribe of the Sumeru Akademiya. This title may sound very impressive, but it's really because the Akademiya has a culture of using official titles to inflate one's ego.",
+      "wordCount": 3744
+    },
+    {
+      "slug": "character-backstory-cyno",
+      "name": "Cyno",
+      "region": "Sumeru",
+      "element": "electro",
+      "rarity": 5,
+      "readingTime": "15 Menit",
+      "summary": "If an Akademiya researcher is required to have a formal meeting with the General Mahamatra, Cyno, it usually does not bode well.",
+      "wordCount": 2874
+    },
+    {
+      "slug": "character-backstory-navia",
+      "name": "Navia",
+      "region": "Fontaine",
+      "element": "geo",
+      "rarity": 5,
+      "readingTime": "20 Menit",
+      "summary": "Judging from her appearance, there's no doubt that Navia is the very picture of a Fontainian lady.",
+      "wordCount": 3806
+    },
+    {
+      "slug": "character-backstory-clorinde",
+      "name": "Clorinde",
+      "region": "Fontaine",
+      "element": "electro",
+      "rarity": 5,
+      "readingTime": "26 Menit",
+      "summary": "Disputes are a Mora a dozen in Fontaine, day in and day out.",
+      "wordCount": 5005
+    },
+    {
+      "slug": "character-backstory-arlecchino",
+      "name": "Arlecchino",
+      "region": "Fontaine",
+      "element": "pyro",
+      "rarity": 5,
+      "readingTime": "17 Menit",
+      "summary": "To this day, Arlecchino still recalls that night when she was first appointed as a Harbinger.",
+      "wordCount": 3307
+    },
+    {
+      "slug": "character-backstory-kinich",
+      "name": "Kinich",
+      "region": "Natlan",
+      "element": "dendro",
+      "rarity": 5,
+      "readingTime": "24 Menit",
+      "summary": "\\\"It's one thing to charge a fee for delivering a letter, but charging for being a flame bearer on Turnfire Night? It's outrageous! Is this really a hero of ours?\\\"",
+      "wordCount": 4742
+    },
+    {
+      "slug": "character-backstory-xilonen",
+      "name": "Xilonen",
+      "region": "Natlan",
+      "element": "geo",
+      "rarity": 5,
+      "readingTime": "23 Menit",
+      "summary": "Xilonen's skill with the forge is renowned throughout Natlan.",
+      "wordCount": 4550
+    },
+    {
+      "slug": "character-backstory-mualani",
+      "name": "Mualani",
+      "region": "Natlan",
+      "element": "hydro",
+      "rarity": 5,
+      "readingTime": "23 Menit",
+      "summary": "In terms of how well they know Natlan, perhaps even the birds that gaze down upon this land from high up above would fall short of the guides from the People of the Springs. Long, long ago, their forerunners once measured the world with their feet, transforming the winding, peril",
+      "wordCount": 4562
+    },
+    {
+      "slug": "character-backstory-tartaglia",
+      "name": "Tartaglia",
+      "region": "Snezhnaya",
+      "element": "hydro",
+      "rarity": 5,
+      "readingTime": "10 Menit",
+      "summary": "Warm and friendly one minute, ruthless killer the next... His shifting and unpredictable personality can leave those around him at a loss for words to describe him. But in rare, private moments, he dispenses with titles, casts off his armor and the layers of intrigue that come wi",
+      "wordCount": 1838
+    }
+  ],
+  "archonQuests": [
+    {
+      "slug": "archon-quest-prologue",
+      "title": "Prologue: The Outlander Who Caught the Wind",
+      "region": "Mondstadt",
+      "readingTime": "14 Menit",
+      "summary": "During their travels across the worlds, the Traveler and their twin sibling are confronted by an unknown entity as they were about to depart. In the ensuing battle, the unknown entity seals off the sibling, before doing the same to the Traveler, sealing their powers and putting b",
+      "wordCount": 2629
+    },
+    {
+      "slug": "archon-quest-chapter-i",
+      "title": "Chapter I: Farewell, Archaic Lord",
+      "region": "Liyue",
+      "readingTime": "22 Menit",
+      "summary": "After being informed by Venti that Rex Lapis is coming to Liyue this year to begin the Rite of Descension, the Traveler and Paimon quickly rush to Liyue to meet the Geo Archon before he leaves.",
+      "wordCount": 4322
+    },
+    {
+      "slug": "archon-quest-chapter-ii",
+      "title": "Chapter II: Omnipresence Over Mortals",
+      "region": "Inazuma",
+      "readingTime": "35 Menit",
+      "summary": "While overlooking Liyue Harbor, the Traveler takes a moment to stop and think over the recent revelations about their sibling and the Abyss Order. Paimon comforts and encourages them to keep going, and the Traveler regains their resolve to look for and confront the Unknown God an",
+      "wordCount": 6837
+    },
+    {
+      "slug": "archon-quest-chapter-iii",
+      "title": "Chapter III: Truth Amongst the Pages of Purana",
+      "region": "Sumeru",
+      "readingTime": "59 Menit",
+      "summary": "The Traveler and Paimon continue their search for answers in Sumeru by seeking an audience with the Dendro Archon. After passing through the tunnel from Cinnabar Cliff in The Chasm and emerging into the lush rainforest of Sumeru, they ask passing scholar Haypasia for directions, ",
+      "wordCount": 11729
+    },
+    {
+      "slug": "archon-quest-chapter-iv",
+      "title": "Chapter IV: Masquerade of the Guilty",
+      "region": "Fontaine",
+      "readingTime": "77 Menit",
+      "summary": "Arriving at Caravan Ribat, Paimon reminiscences about the first time they arrived, helping free Nahida from the corrupt sages of the Sumeru Akademiya. As they prepare to go off to Fontaine, Dehya arrives and greets them, who had just finished a commission to transport some goods.",
+      "wordCount": 15238
+    },
+    {
+      "slug": "archon-quest-chapter-v",
+      "title": "Chapter V: Incandescent Ode of Resurrection",
+      "region": "Natlan",
+      "readingTime": "87 Menit",
+      "summary": "Arriving at Romaritime Harbor, the Traveler and Paimon discuss heading to Natlan. Paimon remarks that they hadn't seen a single human from Natlan despite having done so from Inazuma, and thus worries if Natlan no longer has a human population. Suddenly, Charlotte appears and take",
+      "wordCount": 17233
+    }
+  ]
+}
