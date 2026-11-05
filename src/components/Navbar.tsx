@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Menu, X } from "lucide-react";
+import { Sparkles, Menu, X, PlusCircle, Users } from "lucide-react";
 import { useState } from "react";
 
 const NAV_LINKS = [
@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: "Archon Quest", href: "/kategori/archon-quest" },
   { label: "Story Quest", href: "/kategori/story-quest" },
   { label: "World Lore", href: "/kategori/world-lore" },
+  { label: "Komunitas", href: "/community" },
   { label: "Tentang", href: "/tentang" },
 ];
 
@@ -32,7 +33,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-5">
           {NAV_LINKS.map((l) => (
             <Link
               key={l.href}
@@ -44,10 +45,22 @@ export default function Navbar() {
           ))}
         </nav>
 
+        {/* CTA Button: Buat Lore */}
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/buat-lore"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 transition-all text-xs shadow-md shadow-gold-400/20"
+          >
+            <PlusCircle size={14} />
+            <span>+ Buat Lore</span>
+          </Link>
+        </div>
+
         {/* Mobile hamburger */}
         <button
-          className="md:hidden text-parchment-dim hover:text-gold-300 transition-colors"
+          className="md:hidden text-parchment-dim hover:text-gold-300 transition-colors p-2"
           onClick={() => setOpen(!open)}
+          aria-label="Toggle Menu"
         >
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -55,20 +68,29 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-gold-300/10 bg-celestia-800/95 px-4 py-4 flex flex-col gap-4">
+        <div className="md:hidden border-t border-gold-300/10 bg-celestia-900/98 px-4 py-4 flex flex-col gap-3 shadow-xl">
           {NAV_LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="text-parchment-dim hover:text-gold-300 transition-colors text-sm"
+              className="text-parchment-dim hover:text-gold-300 transition-colors text-sm py-1 font-medium"
             >
               {l.label}
             </Link>
           ))}
+          <div className="pt-2 border-t border-gold-300/10">
+            <Link
+              href="/buat-lore"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 transition-colors text-xs text-center shadow-md shadow-gold-400/20"
+            >
+              <PlusCircle size={15} />
+              + Buat Postingan Lore Baru
+            </Link>
+          </div>
         </div>
       )}
     </header>
   );
 }
-
