@@ -7,34 +7,39 @@ import {
   Users,
   MessageSquare,
   Heart,
-  ExternalLink,
   PlusCircle,
   Search,
   Flame,
   BookOpen,
   ArrowRight,
   RefreshCw,
+  Compass,
+  ChevronDown,
+  ChevronUp,
+  Tag,
 } from "lucide-react";
 import { getApprovedLores, likeLore } from "@/lib/community";
-import { CommunityLore, RedditPost } from "@/types/community";
-import defaultRedditPosts from "@/data/reddit-trending.json";
+import { CommunityLore, CommunityTheory } from "@/types/community";
+import globalTheories from "@/data/community-theories.json";
 
 export default function CommunityPage() {
-  const [activeTab, setActiveTab] = useState<"community" | "reddit">("community");
+  const [activeTab, setActiveTab] = useState<"community" | "theories">("community");
 
-  // State Karya Komunitas
+  // State Karya Pengelana (Firestore / User Submissions)
   const [lores, setLores] = useState<CommunityLore[]>([]);
   const [loadingLores, setLoadingLores] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("Semua");
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
-  // State Reddit Tren (fallback ke arsip teori terpopuler jika koneksi diblokir ISP)
-  const [redditPosts, setRedditPosts] = useState<RedditPost[]>(defaultRedditPosts as RedditPost[]);
-  const [loadingReddit, setLoadingReddit] = useState(false);
-  const [isUsingArchive, setIsUsingArchive] = useState(false);
+  // State Teori Komunitas Global (JSON)
+  const [theories, setTheories] = useState<CommunityTheory[]>(globalTheories as CommunityTheory[]);
+  const [theorySearch, setTheorySearch] = useState("");
+  const [theoryTopic, setTheoryTopic] = useState("Semua");
+  const [expandedTheoryId, setExpandedTheoryId] = useState<string | null>(null);
+  const [theoryLikes, setTheoryLikes] = useState<Record<string, number>>({});
 
-  // Load karya komunitas
+  // Load karya komunitas pengguna
   useEffect(() => {
     async function load() {
       try {
@@ -59,40 +64,11 @@ export default function CommunityPage() {
     }
   }, []);
 
-  // Fetch Reddit ketika tab Reddit dipilih
-  useEffect(() => {
-    if (activeTab === "reddit" && redditPosts.length === 0) {
-      fetchReddit();
-    }
-  }, [activeTab]);
-
-  const fetchReddit = async () => {
-    setLoadingReddit(true);
-    try {
-      const res = await fetch("https://www.reddit.com/r/Genshin_Lore/hot.json?limit=25");
-      if (!res.ok) throw new Error("Gagal mengambil data dari Reddit");
-      const json = await res.json();
-      const posts: RedditPost[] = json.data.children
-        .filter((child: { data: { stickied: boolean } }) => !child.data.stickied)
-        .map((child: { data: RedditPost }) => child.data);
-      if (posts.length > 0) {
-        setRedditPosts(posts);
-        setIsUsingArchive(false);
-      }
-    } catch {
-      // Jika Reddit diblokir ISP Indonesia atau API membatasi CORS, gunakan arsip tren terpopuler
-      setIsUsingArchive(true);
-      setRedditPosts(defaultRedditPosts as RedditPost[]);
-    } finally {
-      setLoadingReddit(false);
-    }
-  };
-
-  const handleLike = async (e: React.MouseEvent, id: string) => {
+  const handleLikeLocal = async (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (likedMap[id]) return; // Sudah like
+    if (likedMap[id]) return;
 
     // Optimistic update
     setLores((prev) =>
@@ -110,10 +86,20 @@ export default function CommunityPage() {
     }
   };
 
-  // Dapatkan daftar topik unik
-  const topics = ["Semua", ...Array.from(new Set(lores.map((l) => l.topic).filter(Boolean)))];
+  const handleLikeTheory = (id: string) => {
+    setTheoryLikes((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1,
+    }));
+  };
 
-  // Filter karya komunitas
+  // Topik unik karya lokal
+  const localTopics = ["Semua", ...Array.from(new Set(lores.map((l) => l.topic).filter(Boolean)))];
+
+  // Topik unik teori global
+  const theoryTopics = ["Semua", ...Array.from(new Set(theories.map((t) => t.topic).filter(Boolean)))];
+
+  // Filter karya komunitas lokal
   const filteredLores = lores.filter((item) => {
     const matchSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -125,6 +111,19 @@ export default function CommunityPage() {
     return matchSearch && matchTopic;
   });
 
+  // Filter teori komunitas global
+  const filteredTheories = theories.filter((item) => {
+    const matchSearch =
+      item.title.toLowerCase().includes(theorySearch.toLowerCase()) ||
+      item.summary.toLowerCase().includes(theorySearch.toLowerCase()) ||
+      item.author.toLowerCase().includes(theorySearch.toLowerCase()) ||
+      item.topic.toLowerCase().includes(theorySearch.toLowerCase()) ||
+      item.tags.some((tag) => tag.toLowerCase().includes(theorySearch.toLowerCase()));
+
+    const matchTopic = theoryTopic === "Semua" || item.topic === theoryTopic;
+    return matchSearch && matchTopic;
+  });
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Banner */}
@@ -133,7 +132,7 @@ export default function CommunityPage() {
 
         <div className="space-y-3 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-300/10 border border-gold-300/20 text-gold-300 text-xs font-semibold tracking-wider uppercase">
-            <Users size={14} /> Komunitas & Diskusi Teori
+            <Users size={14} /> Komunitas & Arsip Teori Teyvat
           </div>
           <h1
             className="text-3xl sm:text-4xl font-bold text-parchment tracking-wide"
@@ -143,7 +142,7 @@ export default function CommunityPage() {
           </h1>
           <p className="text-sm text-parchment-dim leading-relaxed">
             Tempat berkumpulnya para pengelana untuk menyusun hipotesis, mengulik sejarah bangsa
-            kuno yang tenggelam, hingga menyimak obrolan teori paling hangat di komunitas global.
+            kuno yang tenggelam, serta membaca arsip teori terbaik dari komunitas pecinta Genshin Impact.
           </p>
         </div>
 
@@ -172,43 +171,44 @@ export default function CommunityPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab("reddit")}
+            onClick={() => setActiveTab("theories")}
             className={`flex items-center gap-2 pb-3 px-2 text-sm font-semibold tracking-wide border-b-2 transition-all ${
-              activeTab === "reddit"
+              activeTab === "theories"
                 ? "border-gold-300 text-gold-300"
                 : "border-transparent text-parchment-dim hover:text-parchment"
             }`}
           >
-            <Flame size={18} className="text-orange-400" />
-            <span>Tren Global (r/Genshin_Lore)</span>
+            <Compass size={18} className="text-gold-300" />
+            <span>Koleksi Teori Komunitas ({theories.length})</span>
           </button>
         </div>
 
-        {activeTab === "community" && (
-          <div className="relative w-full sm:w-64 pb-3">
-            <Search
-              size={15}
-              className="absolute left-3 top-2.5 text-parchment-muted pointer-events-none"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari naskah atau topik..."
-              className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-celestia-900 border border-gold-300/20 text-parchment text-xs placeholder-parchment-muted/50 focus:outline-none focus:border-gold-300"
-            />
-          </div>
-        )}
+        {/* Kolom Pencarian */}
+        <div className="relative w-full sm:w-64 pb-3">
+          <Search
+            size={15}
+            className="absolute left-3 top-2.5 text-parchment-muted pointer-events-none"
+          />
+          <input
+            type="text"
+            value={activeTab === "community" ? searchQuery : theorySearch}
+            onChange={(e) =>
+              activeTab === "community" ? setSearchQuery(e.target.value) : setTheorySearch(e.target.value)
+            }
+            placeholder="Cari naskah atau topik..."
+            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-celestia-900 border border-gold-300/20 text-parchment text-xs placeholder-parchment-muted/50 focus:outline-none focus:border-gold-300"
+          />
+        </div>
       </div>
 
-      {/* Konten Tab 1: Karya Komunitas */}
+      {/* Konten Tab 1: Karya Pengelana (User Submissions) */}
       {activeTab === "community" && (
         <div className="space-y-6">
           {/* Filter Topik */}
-          {topics.length > 2 && (
+          {localTopics.length > 2 && (
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
               <span className="text-xs text-parchment-muted shrink-0">Topik:</span>
-              {topics.map((t) => (
+              {localTopics.map((t) => (
                 <button
                   key={t}
                   onClick={() => setSelectedTopic(t)}
@@ -252,7 +252,6 @@ export default function CommunityPage() {
                     href={`/community/${item.slug}`}
                     className="group flex flex-col justify-between rounded-2xl bg-celestia-900/60 border border-gold-300/15 hover:border-gold-300/40 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gold-300/5"
                   >
-                    {/* Sampul Gambar jika ada */}
                     {item.coverImageUrl ? (
                       <div className="relative h-44 w-full overflow-hidden bg-celestia-950">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -274,7 +273,6 @@ export default function CommunityPage() {
                       </div>
                     )}
 
-                    {/* Konten Card */}
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div className="space-y-2">
                         <h2
@@ -288,7 +286,6 @@ export default function CommunityPage() {
                         </p>
                       </div>
 
-                      {/* Footer Card */}
                       <div className="pt-4 mt-4 border-t border-gold-300/10 flex items-center justify-between text-xs text-parchment-muted">
                         <div className="flex items-center gap-1.5">
                           <span className="text-parchment-dim">Oleh</span>
@@ -300,7 +297,7 @@ export default function CommunityPage() {
                         <div className="flex items-center gap-3">
                           <button
                             type="button"
-                            onClick={(e) => handleLike(e, item.id!)}
+                            onClick={(e) => handleLikeLocal(e, item.id!)}
                             className={`flex items-center gap-1 transition-colors ${
                               isLiked ? "text-rose-400 font-bold" : "hover:text-rose-400"
                             }`}
@@ -324,89 +321,117 @@ export default function CommunityPage() {
         </div>
       )}
 
-      {/* Konten Tab 2: Tren Reddit r/Genshin_Lore */}
-      {activeTab === "reddit" && (
+      {/* Konten Tab 2: Koleksi Teori Komunitas Global (JSON Bebas Blokir) */}
+      {activeTab === "theories" && (
         <div className="space-y-6">
-          <div className="p-4 rounded-2xl bg-orange-950/20 border border-orange-500/20 text-xs text-orange-200/90 flex items-center justify-between flex-wrap gap-2">
-            <span>
-              🔥 Diambil dari komunitas teori terbesar di dunia:{" "}
-              <strong className="text-orange-400">r/Genshin_Lore</strong> (Reddit).
-              {isUsingArchive && (
-                <span className="ml-2 text-[11px] text-orange-300/80">
-                  (Mode Arsip Teori Pilihan)
-                </span>
-              )}
-            </span>
-            <button
-              onClick={fetchReddit}
-              disabled={loadingReddit}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/30 transition-colors"
-            >
-              <RefreshCw size={12} className={loadingReddit ? "animate-spin" : ""} />
-              Segarkan Feed
-            </button>
+          {/* Filter Topik Teori */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <span className="text-xs text-parchment-muted shrink-0">Topik:</span>
+            {theoryTopics.map((t) => (
+              <button
+                key={t}
+                onClick={() => setTheoryTopic(t)}
+                className={`px-3 py-1 rounded-full text-xs shrink-0 transition-colors border ${
+                  theoryTopic === t
+                    ? "bg-gold-300/20 text-gold-300 border-gold-300/40"
+                    : "bg-celestia-900/60 text-parchment-dim border-gold-300/10 hover:text-parchment"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
           </div>
 
-          {loadingReddit ? (
-            <div className="text-center py-20 text-parchment-muted text-sm flex items-center justify-center gap-2">
-              <RefreshCw size={18} className="animate-spin text-orange-400" />
-              Menghubungkan ke Reddit r/Genshin_Lore...
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {redditPosts.map((post) => (
-                <a
-                  key={post.id}
-                  href={`https://reddit.com${post.permalink}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block p-5 sm:p-6 rounded-2xl bg-celestia-900/60 border border-gold-300/10 hover:border-orange-500/40 transition-all hover:-translate-y-0.5 group"
+          <div className="space-y-4">
+            {filteredTheories.map((theory) => {
+              const isExpanded = expandedTheoryId === theory.id;
+              const currentLikes = theory.likes + (theoryLikes[theory.id] || 0);
+
+              return (
+                <div
+                  key={theory.id}
+                  className="p-6 rounded-2xl bg-celestia-900/60 border border-gold-300/15 hover:border-gold-300/35 transition-all space-y-4"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div className="space-y-2 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        {post.link_flair_text && (
-                          <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold bg-orange-500/15 text-orange-300 border border-orange-500/30">
-                            {post.link_flair_text}
-                          </span>
-                        )}
-                        <span className="text-xs text-parchment-muted">
-                          Diposting oleh u/{post.author}
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-300/15 text-gold-300 border border-gold-300/30 uppercase tracking-wider">
+                          {theory.topic}
                         </span>
+                        <span className="text-xs text-parchment-muted">
+                          Sumber: <strong className="text-gold-200">{theory.source}</strong> ({theory.author})
+                        </span>
+                        <span className="text-xs text-parchment-muted">• {theory.readingTime}</span>
                       </div>
 
-                      <h2 className="text-base font-semibold text-parchment group-hover:text-orange-300 transition-colors leading-snug">
-                        {post.title}
+                      <h2
+                        className="text-lg font-bold text-parchment cursor-pointer hover:text-gold-200 transition-colors"
+                        style={{ fontFamily: "Cinzel, Georgia, serif" }}
+                        onClick={() => setExpandedTheoryId(isExpanded ? null : theory.id)}
+                      >
+                        {theory.title}
                       </h2>
 
-                      {post.selftext && (
-                        <p className="text-xs text-parchment-dim line-clamp-2 leading-relaxed">
-                          {post.selftext}
-                        </p>
-                      )}
+                      <p className="text-xs text-parchment-dim leading-relaxed">
+                        {theory.summary}
+                      </p>
                     </div>
 
-                    <div className="shrink-0 p-2 text-parchment-muted group-hover:text-orange-400 transition-colors">
-                      <ExternalLink size={18} />
-                    </div>
+                    <button
+                      onClick={() => setExpandedTheoryId(isExpanded ? null : theory.id)}
+                      className="px-3.5 py-1.5 rounded-xl bg-celestia-800 text-parchment-dim hover:text-gold-300 border border-gold-300/20 text-xs flex items-center gap-1.5 transition-colors self-start shrink-0"
+                    >
+                      <span>{isExpanded ? "Tutup Naskah" : "Baca Uraian Lengkap"}</span>
+                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </button>
                   </div>
 
-                  {/* Footer Metrics */}
-                  <div className="mt-4 pt-3 border-t border-gold-300/10 flex items-center gap-4 text-xs text-parchment-muted">
-                    <span className="flex items-center gap-1.5 text-orange-400 font-semibold">
-                      ▲ {post.ups.toLocaleString()} Upvotes
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <MessageSquare size={13} /> {post.num_comments} Komentar
-                    </span>
+                  {/* Isi Lengkap jika Di-expand */}
+                  {isExpanded && (
+                    <div className="pt-4 border-t border-gold-300/15 space-y-4 animate-fade-in">
+                      <div className="p-5 rounded-xl bg-celestia-950/80 border border-gold-300/10 text-xs sm:text-sm text-parchment/95 whitespace-pre-wrap leading-relaxed">
+                        {theory.content}
+                      </div>
+
+                      {/* Tagar */}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <Tag size={13} className="text-gold-300" />
+                        {theory.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[11px] px-2.5 py-0.5 rounded-md bg-celestia-900 border border-gold-300/10 text-parchment-dim"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Footer Card */}
+                  <div className="pt-3 border-t border-gold-300/10 flex items-center justify-between text-xs text-parchment-muted">
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleLikeTheory(theory.id)}
+                        className="flex items-center gap-1 text-gold-300 hover:text-gold-200 transition-colors"
+                      >
+                        <Heart size={14} className="fill-gold-300/30" />
+                        <span>{currentLikes.toLocaleString()} Suka</span>
+                      </button>
+                      <span className="flex items-center gap-1">
+                        <MessageSquare size={14} />
+                        <span>{theory.commentsCount} Diskusi</span>
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-parchment-muted">{theory.date}</span>
                   </div>
-                </a>
-              ))}
-            </div>
-          )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
   );
 }
-

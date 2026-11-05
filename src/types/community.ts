@@ -14,17 +14,17 @@ export interface CommunityLore {
   updatedAt?: number;
 }
 
-export interface RedditPost {
+export interface CommunityTheory {
   id: string;
   title: string;
+  source: string; // Misal: "Forum HoYoLAB", "Arsip Teori Pengelana", "Kolektif Lore Teyvat"
   author: string;
-  subreddit: string;
-  ups: number;
-  num_comments: number;
-  permalink: string;
-  url: string;
-  created_utc: number;
-  selftext?: string;
-  link_flair_text?: string;
+  topic: string; // Misal: "Naga Purba", "Celestia", "Khaenri'ah", "Descender"
+  summary: string;
+  content: string;
+  likes: number;
+  commentsCount: number;
+  readingTime: string;
+  tags: string[];
+  date: string;
 }
-
