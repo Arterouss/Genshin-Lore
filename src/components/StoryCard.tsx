@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Headphones, BookOpen, Play } from "lucide-react";
+import { Clock, Headphones, BookOpen, Play, Pause } from "lucide-react";
 import type { StoryMeta } from "@/types/story";
 import ElementBadge from "./ElementBadge";
 import { useAudio } from "@/context/AudioContext";
@@ -14,7 +14,26 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 export default function StoryCard({ story }: { story: StoryMeta }) {
-  const { play } = useAudio();
+  const { track, isPlaying, play, togglePlay } = useAudio();
+  const isThisPlaying = track?.title === story.title && isPlaying;
+
+  const handleAudioClick = () => {
+    if (track?.title === story.title) {
+      togglePlay();
+    } else {
+      play({
+        title: story.title,
+        character: story.character,
+        region: story.region,
+        url: story.audioUrl || "",
+        speechText: `${story.title}. Wilayah ${story.region}. ${
+          story.character ? `Kisah ${story.character}. ` : ""
+        }${story.summary}`,
+        duration: story.audioDuration || "Narasi AI",
+        isAiVoice: !story.audioUrl,
+      });
+    }
+  };
 
   return (
     <article className="primogem-corner group relative flex flex-col bg-scroll-800 border border-gold-300/15 rounded-xl overflow-hidden hover:border-gold-300/40 transition-all duration-300 hover:glow-gold">
@@ -74,12 +93,10 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             <Clock size={12} />
             {story.readingTime}
           </span>
-          {story.audioDuration && (
-            <span className="flex items-center gap-1 text-anemo">
-              <Headphones size={12} />
-              {story.audioDuration}
-            </span>
-          )}
+          <span className="flex items-center gap-1 text-anemo" title="Tersedia Mode Narator Suara AI">
+            <Headphones size={12} />
+            {story.audioDuration || "Audio AI"}
+          </span>
         </div>
 
         {/* Gold divider */}
@@ -94,26 +111,31 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             <BookOpen size={13} />
             Baca Ringkasan
           </Link>
-          {story.audioUrl && (
-            <button
-              onClick={() =>
-                play({
-                  title: story.title,
-                  character: story.character,
-                  region: story.region,
-                  url: story.audioUrl!,
-                  duration: story.audioDuration,
-                })
-              }
-              className="flex items-center justify-center gap-1.5 bg-celestia-600 hover:bg-celestia-500 border border-celestia-500 hover:border-gold-300/30 text-parchment-dim hover:text-gold-300 text-xs font-semibold py-2 px-3 rounded-lg transition-all"
-            >
-              <Play size={13} />
-              Audio
-            </button>
-          )}
+
+          {/* Tombol Audio Narator AI - Selalu Aktif */}
+          <button
+            onClick={handleAudioClick}
+            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all border ${
+              isThisPlaying
+                ? "bg-gold-400 text-celestia-950 border-gold-300 shadow-md glow-gold font-bold"
+                : "bg-celestia-700/80 hover:bg-celestia-600 border-gold-300/25 hover:border-gold-300/50 text-gold-300 hover:text-gold-200"
+            }`}
+            title="Dengarkan Narator AI Teyvat"
+          >
+            {isThisPlaying ? (
+              <>
+                <Pause size={13} className="text-celestia-950" />
+                <span>Memutar</span>
+              </>
+            ) : (
+              <>
+                <Headphones size={13} className="text-gold-300" />
+                <span>Audio AI</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </article>
   );
 }
-

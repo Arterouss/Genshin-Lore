@@ -12,9 +12,12 @@ import {
   BookOpen,
   Check,
   Tag,
+  Headphones,
+  Pause,
 } from "lucide-react";
 import { CommunityLore } from "@/types/community";
 import { getLoreBySlug, likeLore } from "@/lib/community";
+import { useAudio } from "@/context/AudioContext";
 
 interface CommunityLoreReaderProps {
   slug: string;
@@ -128,6 +131,25 @@ export default function CommunityLoreReader({ slug, initialLore }: CommunityLore
   const [loading, setLoading] = useState(!initialLore);
   const [isLiked, setIsLiked] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { play, togglePlay, isPlaying, track } = useAudio();
+
+  const isThisPlaying = Boolean(isPlaying && track?.title === lore?.title);
+
+  const handleAudioNarration = () => {
+    if (!lore) return;
+    if (track?.title === lore.title) {
+      togglePlay();
+    } else {
+      play({
+        title: lore.title,
+        character: lore.authorName,
+        region: lore.topic,
+        speechText: `${lore.title}. Topik ${lore.topic}. Disusun oleh ${lore.authorName}. ${lore.content}`,
+        duration: "Narasi AI",
+        isAiVoice: true,
+      });
+    }
+  };
 
   useEffect(() => {
     async function load() {
@@ -259,6 +281,29 @@ export default function CommunityLoreReader({ slug, initialLore }: CommunityLore
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Tombol Audio Narator AI */}
+            <button
+              onClick={handleAudioNarration}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all border ${
+                isThisPlaying
+                  ? "bg-gold-400 text-celestia-950 border-gold-300 shadow-md glow-gold font-bold animate-pulse"
+                  : "bg-celestia-900/80 hover:bg-celestia-800 text-gold-300 hover:text-gold-200 border-gold-300/25 hover:border-gold-300/50"
+              }`}
+              title="Dengarkan Narator AI membaca naskah teori ini"
+            >
+              {isThisPlaying ? (
+                <>
+                  <Pause size={15} className="text-celestia-950" />
+                  <span>Jeda Narasi</span>
+                </>
+              ) : (
+                <>
+                  <Headphones size={15} className="text-gold-300" />
+                  <span>Dengarkan Narator AI</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={handleLike}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
