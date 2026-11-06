@@ -18,6 +18,7 @@ import {
 import { CommunityLore } from "@/types/community";
 import { getLoreBySlug, likeLore } from "@/lib/community";
 import { useAudio } from "@/context/AudioContext";
+import CommentSection from "@/components/CommentSection";
 
 interface CommunityLoreReaderProps {
   slug: string;
@@ -390,6 +391,9 @@ export default function CommunityLoreReader({ slug, initialLore }: CommunityLore
           Tulis Naskah Teori Baru
         </Link>
       </div>
+
+      {/* Kolom Komentar & Diskusi Komunitas */}
+      <CommentSection storySlug={slug} storyTitle={lore.title} />
     </article>
   );
 }

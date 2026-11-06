@@ -15,6 +15,7 @@ import {
   Volume2,
 } from "lucide-react";
 import Link from "next/link";
+import CommentSection from "@/components/CommentSection";
 
 type Mode = "ringkas" | "narasi";
 
@@ -244,6 +245,9 @@ export default function StoryReader({ story }: { story: StoryFull }) {
         className="prose-teyvat leading-relaxed"
         dangerouslySetInnerHTML={{ __html: story.contentHtml }}
       />
+
+      {/* Kolom Komentar & Diskusi Pengelana */}
+      <CommentSection storySlug={story.slug} storyTitle={story.title} />
 
       {/* Tombol Kembali di Bagian Bawah */}
       <div className="mt-16 pt-8 border-t border-gold-300/10 text-center">
