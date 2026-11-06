@@ -5,8 +5,8 @@ region: "Inazuma"
 element: "cryo"
 category: "character-backstory"
 readingTime: "12 Menit"
-audioUrl: ""
-audioDuration: ""
+audioUrl: "https://static.wikia.nocookie.net/gensin-impact/images/b/b8/VO_Kamisato_Ayaka_Hello.ogg/revision/latest?cb=20210728005831"
+audioDuration: "Suara Karakter"
 summary: "Daughter of the Yashiro Commission's Kamisato Clan from Inazuma. Poised and graceful, noble and virtuous.
 
 Working in tandem with her elder brother and the current head of the clan, Kamisato Ayato, the siblings divided among themselves different responsibilities arising from thei"

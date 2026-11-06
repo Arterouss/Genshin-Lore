@@ -129,7 +129,7 @@ export default function AudioPlayerBar() {
                   </span>
                 ) : (
                   <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    Audio Asli
+                    🎙️ Suara Karakter
                   </span>
                 )}
                 {isPlaying && (

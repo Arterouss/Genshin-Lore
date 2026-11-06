@@ -5,8 +5,8 @@ region: "Mondstadt"
 element: "anemo"
 category: "character-backstory"
 readingTime: "10 Menit"
-audioUrl: ""
-audioDuration: ""
+audioUrl: "https://static.wikia.nocookie.net/gensin-impact/images/a/ad/VO_Venti_Hello.ogg/revision/latest?cb=20210113121129"
+audioDuration: "Suara Karakter"
 summary: "▌Singer of Skyward Sonnets · Venti
 
 A bard as free as the wind, now residing in the city of dandelions."

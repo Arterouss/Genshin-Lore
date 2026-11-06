@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   description:
     "Baca dan dengarkan ringkasan lore Genshin Impact dalam Bahasa Indonesia. Nikmati cerita backstory karakter, Archon Quest, World Quest, dan lebih banyak dalam 10–25 menit.",
   keywords: ["Genshin Impact", "Lore", "Bahasa Indonesia", "Teyvat", "Ringkasan Cerita", "Audio"],
+  other: {
+    google: "notranslate",
+  },
 };
 
 export default function RootLayout({
@@ -24,8 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${cinzel.variable} h-full`}>
-      <body className="min-h-full flex flex-col pb-20">
+    <html lang="id" className={`${cinzel.variable} h-full notranslate`} translate="no">
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
+      <body className="min-h-full flex flex-col pb-20 notranslate" translate="no">
         <AudioProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

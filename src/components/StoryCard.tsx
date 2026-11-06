@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Headphones, BookOpen, Play, Pause } from "lucide-react";
+import { Clock, Headphones, BookOpen, Pause, Volume2 } from "lucide-react";
 import type { StoryMeta } from "@/types/story";
 import ElementBadge from "./ElementBadge";
 import { useAudio } from "@/context/AudioContext";
@@ -15,22 +15,35 @@ const CATEGORY_LABEL: Record<string, string> = {
 
 export default function StoryCard({ story }: { story: StoryMeta }) {
   const { track, isPlaying, play, togglePlay } = useAudio();
-  const isThisPlaying = track?.title === story.title && isPlaying;
+  const isThisPlaying =
+    isPlaying &&
+    (Boolean(story.audioUrl && track?.url === story.audioUrl) ||
+      Boolean(track?.title?.includes(story.title)));
 
   const handleAudioClick = () => {
-    if (track?.title === story.title) {
+    if (isThisPlaying) {
       togglePlay();
-    } else {
+    } else if (story.audioUrl) {
+      // Putar rekaman suara resmi karakter
       play({
-        title: story.title,
+        title: `${story.character || story.title} (Suara Karakter)`,
         character: story.character,
         region: story.region,
-        url: story.audioUrl || "",
+        url: story.audioUrl,
+        duration: "Voice Line",
+        isAiVoice: false,
+      });
+    } else {
+      // Putar Narator AI
+      play({
+        title: `${story.title} (Narasi AI)`,
+        character: story.character,
+        region: story.region,
         speechText: `${story.title}. Wilayah ${story.region}. ${
           story.character ? `Kisah ${story.character}. ` : ""
         }${story.summary}`,
-        duration: story.audioDuration || "Narasi AI",
-        isAiVoice: !story.audioUrl,
+        duration: "Narasi AI",
+        isAiVoice: true,
       });
     }
   };
@@ -93,10 +106,17 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             <Clock size={12} />
             {story.readingTime}
           </span>
-          <span className="flex items-center gap-1 text-anemo" title="Tersedia Mode Narator Suara AI">
-            <Headphones size={12} />
-            {story.audioDuration || "Audio AI"}
-          </span>
+          {story.audioUrl ? (
+            <span className="flex items-center gap-1 text-emerald-300" title="Tersedia rekaman suara resmi karakter">
+              <Volume2 size={12} />
+              Suara Karakter
+            </span>
+          ) : (
+            <span className="flex items-center gap-1 text-anemo" title="Tersedia Mode Narator Suara AI">
+              <Headphones size={12} />
+              Audio AI
+            </span>
+          )}
         </div>
 
         {/* Gold divider */}
@@ -109,23 +129,30 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             className="flex-1 flex items-center justify-center gap-1.5 bg-gold-300/10 hover:bg-gold-300/20 border border-gold-300/30 hover:border-gold-300/60 text-gold-300 hover:text-gold-200 text-xs font-semibold py-2 px-3 rounded-lg transition-all"
           >
             <BookOpen size={13} />
-            Baca Ringkasan
+            Baca Naskah
           </Link>
 
-          {/* Tombol Audio Narator AI - Selalu Aktif */}
+          {/* Tombol Audio (Suara Karakter atau Narator AI) */}
           <button
             onClick={handleAudioClick}
             className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all border ${
               isThisPlaying
                 ? "bg-gold-400 text-celestia-950 border-gold-300 shadow-md glow-gold font-bold"
+                : story.audioUrl
+                ? "bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/30 hover:border-emerald-500/50 text-emerald-300 hover:text-emerald-200"
                 : "bg-celestia-700/80 hover:bg-celestia-600 border-gold-300/25 hover:border-gold-300/50 text-gold-300 hover:text-gold-200"
             }`}
-            title="Dengarkan Narator AI Teyvat"
+            title={story.audioUrl ? "Dengarkan suara resmi karakter" : "Dengarkan Narator AI Teyvat"}
           >
             {isThisPlaying ? (
               <>
                 <Pause size={13} className="text-celestia-950" />
                 <span>Memutar</span>
+              </>
+            ) : story.audioUrl ? (
+              <>
+                <Volume2 size={13} className="text-emerald-300" />
+                <span>Suara</span>
               </>
             ) : (
               <>

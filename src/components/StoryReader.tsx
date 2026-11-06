@@ -12,6 +12,7 @@ import {
   Zap,
   BookOpen,
   Sparkles,
+  Volume2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -21,10 +22,27 @@ export default function StoryReader({ story }: { story: StoryFull }) {
   const [mode, setMode] = useState<Mode>("narasi");
   const { play, togglePlay, isPlaying, track } = useAudio();
 
-  const isThisPlaying = isPlaying && track?.title === story.title;
+  const isVoiceLinePlaying = isPlaying && track?.url === story.audioUrl && Boolean(story.audioUrl);
+  const isAiNarrating =
+    isPlaying && track?.isAiVoice && track?.title?.includes(story.title);
 
-  const handlePlayAudio = () => {
-    if (track?.title === story.title) {
+  const handlePlayVoiceLine = () => {
+    if (isVoiceLinePlaying) {
+      togglePlay();
+    } else {
+      play({
+        title: `${story.character || story.title} (Suara Resmi Karakter)`,
+        character: story.character,
+        region: story.region,
+        url: story.audioUrl!,
+        duration: "Voice Line",
+        isAiVoice: false,
+      });
+    }
+  };
+
+  const handlePlayAiNarration = () => {
+    if (isAiNarrating) {
       togglePlay();
     } else {
       // Bersihkan teks HTML agar dibacakan dengan alami oleh Narator AI
@@ -43,13 +61,12 @@ export default function StoryReader({ story }: { story: StoryFull }) {
             }${cleanNarrative}`;
 
       play({
-        title: story.title,
+        title: `${story.title} (Narasi AI)`,
         character: story.character,
         region: story.region,
-        url: story.audioUrl || "",
         speechText: textToNarrate,
-        duration: story.audioDuration || (mode === "ringkas" ? "Intisari AI" : "Narasi Penuh AI"),
-        isAiVoice: !story.audioUrl,
+        duration: mode === "ringkas" ? "Intisari AI" : "Narasi Penuh AI",
+        isAiVoice: true,
       });
     }
   };
@@ -95,41 +112,69 @@ export default function StoryReader({ story }: { story: StoryFull }) {
           <p className="text-parchment-dim leading-relaxed italic">{story.summary}</p>
         </div>
 
-        {/* Bar Metadata & Tombol Audio AI Utama */}
+        {/* Bar Metadata & Tombol Audio */}
         <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-gold-300/15">
           <div className="flex items-center gap-4 text-parchment-muted text-sm">
             <span className="flex items-center gap-1.5">
               <Clock size={14} />
               {story.readingTime} baca
             </span>
-            <span className="flex items-center gap-1.5 text-anemo" title="Mendukung Narator AI Suara">
-              <Headphones size={14} />
-              {story.audioDuration || "Audio Narator AI"}
-            </span>
+            {story.audioUrl && (
+              <span className="flex items-center gap-1.5 text-emerald-300" title="Suara resmi karakter tersedia">
+                <Volume2 size={14} />
+                Suara Karakter
+              </span>
+            )}
           </div>
 
-          {/* Tombol Audio Narator AI - Selalu Tampil & Berfungsi */}
-          <button
-            onClick={handlePlayAudio}
-            className={`flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full transition-all shadow-lg ${
-              isThisPlaying
-                ? "bg-gradient-to-r from-gold-400 to-gold-200 text-celestia-950 font-bold glow-gold animate-pulse"
-                : "bg-gold-300/15 border border-gold-300/40 text-gold-300 hover:bg-gold-300/25 hover:border-gold-300/60"
-            }`}
-            title="Dengarkan Narator AI Suara membacakan kisah ini"
-          >
-            {isThisPlaying ? (
-              <>
-                <Pause size={15} className="text-celestia-950" />
-                <span>Sedang Dinarasikan (Jeda)</span>
-              </>
-            ) : (
-              <>
-                <Headphones size={15} className="text-gold-300" />
-                <span>Dengarkan Narator AI</span>
-              </>
+          {/* Group Tombol Audio (Suara Karakter & Narator AI) */}
+          <div className="flex flex-wrap items-center gap-2">
+            {story.audioUrl && (
+              <button
+                onClick={handlePlayVoiceLine}
+                className={`flex items-center gap-2 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-all border shadow-md ${
+                  isVoiceLinePlaying
+                    ? "bg-gradient-to-r from-emerald-500 to-emerald-400 text-celestia-950 font-bold shadow-emerald-500/20 animate-pulse"
+                    : "bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25"
+                }`}
+                title="Dengarkan rekaman suara resmi karakter berbicara"
+              >
+                {isVoiceLinePlaying ? (
+                  <>
+                    <Pause size={14} className="text-celestia-950" />
+                    <span>Jeda Suara</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={14} className="text-emerald-300" />
+                    <span>🎙️ Suara Karakter</span>
+                  </>
+                )}
+              </button>
             )}
-          </button>
+
+            <button
+              onClick={handlePlayAiNarration}
+              className={`flex items-center gap-2 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-all shadow-md ${
+                isAiNarrating
+                  ? "bg-gradient-to-r from-gold-400 to-gold-200 text-celestia-950 font-bold glow-gold animate-pulse"
+                  : "bg-gold-300/15 border border-gold-300/40 text-gold-300 hover:bg-gold-300/25"
+              }`}
+              title="Dengarkan Narator AI membaca naskah"
+            >
+              {isAiNarrating ? (
+                <>
+                  <Pause size={14} className="text-celestia-950" />
+                  <span>Jeda Narator AI</span>
+                </>
+              ) : (
+                <>
+                  <Headphones size={14} className="text-gold-300" />
+                  <span>Dengarkan Narator AI</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -156,17 +201,17 @@ export default function StoryReader({ story }: { story: StoryFull }) {
         </div>
 
         <button
-          onClick={handlePlayAudio}
+          onClick={handlePlayAiNarration}
           className={`flex items-center gap-2 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl transition-all border ${
-            isThisPlaying
+            isAiNarrating
               ? "bg-gold-400 text-celestia-950 border-gold-300 glow-gold"
               : "bg-celestia-800/90 hover:bg-celestia-700 text-gold-300 border-gold-300/30 hover:border-gold-300/50"
           }`}
           title="Putar naskah sesuai pilihan mode saat ini"
         >
-          <Sparkles size={14} className={isThisPlaying ? "animate-spin text-celestia-950" : "text-gold-300"} />
+          <Sparkles size={14} className={isAiNarrating ? "animate-spin text-celestia-950" : "text-gold-300"} />
           <span>
-            {isThisPlaying
+            {isAiNarrating
               ? "Jeda Narasi AI"
               : mode === "ringkas"
               ? "Dengarkan Intisari AI"
