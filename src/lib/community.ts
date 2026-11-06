@@ -14,74 +14,26 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage, isFirebaseConfigured } from "./firebase";
 import { CommunityLore } from "@/types/community";
+import communityTheories from "@/data/community-theories.json";
 
 const COLLECTION_NAME = "community_lore";
 const LOCAL_STORAGE_KEY = "teyvat_lore_community_posts";
 
-// Contoh lore bawaan jika database belum dihubungkan atau masih kosong
-export const INITIAL_COMMUNITY_LORES: CommunityLore[] = [
-  {
-    id: "sample-1",
-    title: "Misteri Kebangkitan Tujuh Naga Berdaulat (Seven Sovereigns)",
-    slug: "misteri-kebangkitan-tujuh-naga-berdaulat",
-    authorName: "NeuvilletteEnjoyer",
-    topic: "Lore Naga Purba",
-    summary:
-      "Analisis mendalam mengenai pengembalian Otoritas Kuno kepada para Penguasa Naga Pertama, kepunahan Nibelung, dan bagaimana Fontaine menjadi titik balik tatanan langit Celestia.",
-    content: `### Era Sebelum Tatanan Celestia Datang
-
-Sebelum *The Primordial One* (Phanes) tiba di Teyvat bersama empat bayangannya, dunia ini bukanlah milik manusia atau para dewa Archon. Dunia Teyvat purba sepenuhnya dikuasai oleh **Tujuh Naga Berdaulat (Seven Dragon Sovereigns)** di bawah kepemimpinan Raja Naga Pertama, **Nibelung**.
-
-Elemen di masa itu masih liar dan murni, mengalir langsung melalui tubuh para Vishap purba. Namun, setelah peperangan dahsyat selama empat puluh tahun, Celestia mengalahkan para Sovereign dan merebut bagian inti dari kekuatan elemen mereka, yang kemudian dikenal sebagai **Elemental Authorities** (Otoritas Kuno). Otoritas inilah yang dibagi menjadi tujuh *Gnoses* dan dipegang oleh *The Seven Archons*.
-
-### Titik Balik Fontaine: Pengorbanan Focalors
-
-Selama ribuan tahun, tidak ada satupun naga yang berhasil merebut kembali otoritas penuh mereka—sampai tiba peristiwa penghakiman di Fontaine. **Focalors**, Sang Dewa Keadilan, menyusun rencana rahasia selama 500 tahun untuk menghancurkan tahta Archon Hydro melalui *Indemnitium*.
-
-Ketika pedang eksekusi membelah tahta Ilahi, Otoritas Hydro kembali seutuhnya kepada reinkarnasi Naga Hydro Purba: **Neuvillette**.
-
-> *"Sekarang setelah kekuatanku kembali seutuhnya, aku dapat memaafkan dosa seluruh bangsa Fontaine dan mengubah darah Primordial Sea mereka menjadi darah manusia sejati."*
-
-### Apa Artinya Bagi Masa Depan Teyvat?
-
-Dengan kembalinya otoritas Hydro, tatanan *Heavenly Principles* terbukti bisa dihancurkan. Pertanyaan terbesarnya sekarang:
-1. Akankah naga elemen lain (seperti Apep di Sumeru) menuntut kembali hak mereka?
-2. Apakah Nibelung benar-benar telah binasa, ataukah 'kekuatan dari luar' (Forbidden Knowledge) yang ia bawa akan kembali bangkit?`,
-    coverImageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Naga Purba", "Neuvillette", "Fontaine", "Sovereign", "Celestia"],
-    likesCount: 42,
-    status: "approved",
-    createdAt: Date.now() - 86400000 * 2,
-  },
-  {
-    id: "sample-2",
-    title: "Kebenaran di Balik Langit Palsu dan Sistem Bintang Primogem",
-    slug: "kebenaran-di-balik-langit-palsu-dan-bintang-primogem",
-    authorName: "KhaenriahScholar",
-    topic: "Celestia & Kosmologi",
-    summary:
-      "Mengapa Scaramouche dan Dottore menyebut bahwa bintang-bintang di Teyvat adalah dusta? Eksplorasi hubungan antara Primogem, Takdir Karakter, dan Ilusi Kubah Langit.",
-    content: `### Pernyataan Menggemparkan di Unreconciled Stars
-
-Pada event versi 1.1, Scaramouche menyampaikan satu kalimat yang menjadi pilar teori Genshin hingga hari ini:
-> *"Bintang-bintang, langit itu sendiri... semuanya adalah kebohongan besar. Sebuah tipuan raksasa."*
-
-Dottore kemudian menegaskan hal yang sama dalam perbincangannya dengan Nahida di akhir Archon Quest Sumeru. Ia menyebutkan bahwa Celestia menyembunyikan kebenaran tentang 'Firmament' (kubah langit buatan).
-
-### Hubungan Primogem dengan Jiwa & Nasib
-
-Di menu gacha dan deskripsi item:
-- **Primogem** digambarkan sebagai *"batu permata kristal yang melampaui dunia materi, mengumpulkan harapan dan mimpi yang melayang di angkasa"*.
-- **Constellation (Rasi Bintang)** setiap karakter terkunci di langit, menentukan jalan hidup dan takdir mereka.
-
-Jika langit adalah kubah buatan, maka rasi bintang bukanlah bintang sungguhan di galaksi, melainkan rekaman proyeksi dari *Irminsul* yang dipaksakan kepada penduduk Teyvat oleh tatanan langit untuk mengontrol takdir manusia.`,
-    coverImageUrl: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Celestia", "Scaramouche", "Firmament", "Teori Kosmologi"],
-    likesCount: 38,
-    status: "approved",
-    createdAt: Date.now() - 86400000 * 5,
-  },
-];
+// Contoh & arsip teori komunitas resmi bawaan
+export const INITIAL_COMMUNITY_LORES: CommunityLore[] = communityTheories.map((t, idx) => ({
+  id: t.id,
+  title: t.title,
+  slug: t.slug,
+  authorName: t.authorName,
+  topic: t.topic,
+  summary: t.summary,
+  content: t.content,
+  coverImageUrl: t.coverImageUrl,
+  tags: t.tags,
+  likesCount: t.likesCount,
+  status: "approved" as const,
+  createdAt: Date.now() - 86400000 * (idx + 1),
+}));
 
 // Helper: ambil data lokal fallback
 function getLocalPosts(): CommunityLore[] {

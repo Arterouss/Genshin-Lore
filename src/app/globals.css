@@ -268,26 +268,3 @@ hr.section-break {
   margin: 2.5rem 0;
 }
 
-/* ─── Google Translate Seamless Integration ─────────────────── */
-.goog-te-banner-frame.skiptranslate,
-iframe.goog-te-banner-frame {
-  display: none !important;
-}
-body {
-  top: 0px !important;
-}
-#goog-gt-tt,
-.goog-te-balloon-frame {
-  display: none !important;
-}
-.goog-text-highlight {
-  background: none !important;
-  box-shadow: none !important;
-}
-#google_translate_element {
-  display: none !important;
-}
-.goog-te-gadget {
-  display: none !important;
-}
-

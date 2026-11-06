@@ -3,27 +3,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Sparkles,
   Users,
-  MessageSquare,
   Heart,
   PlusCircle,
   Search,
-  Flame,
   BookOpen,
   ArrowRight,
   RefreshCw,
   Compass,
-  ChevronDown,
-  ChevronUp,
-  Tag,
+  MessageSquare,
+  Sparkles,
 } from "lucide-react";
 import { getApprovedLores, likeLore } from "@/lib/community";
-import { CommunityLore, CommunityTheory } from "@/types/community";
-import globalTheories from "@/data/community-theories.json";
+import { CommunityLore } from "@/types/community";
+import communityTheories from "@/data/community-theories.json";
 
 export default function CommunityPage() {
-  const [activeTab, setActiveTab] = useState<"community" | "theories">("community");
+  const [activeTab, setActiveTab] = useState<"theories" | "community">("theories");
 
   // State Karya Pengelana (Firestore / User Submissions)
   const [lores, setLores] = useState<CommunityLore[]>([]);
@@ -33,11 +29,24 @@ export default function CommunityPage() {
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
   // State Teori Komunitas Global (JSON)
-  const [theories, setTheories] = useState<CommunityTheory[]>(globalTheories as CommunityTheory[]);
+  const [theories] = useState<CommunityLore[]>(
+    communityTheories.map((t, idx) => ({
+      id: t.id,
+      title: t.title,
+      slug: t.slug,
+      authorName: t.authorName,
+      topic: t.topic,
+      summary: t.summary,
+      content: t.content,
+      coverImageUrl: t.coverImageUrl,
+      tags: t.tags,
+      likesCount: t.likesCount,
+      status: "approved" as const,
+      createdAt: Date.now() - 86400000 * (idx + 1),
+    }))
+  );
   const [theorySearch, setTheorySearch] = useState("");
   const [theoryTopic, setTheoryTopic] = useState("Semua");
-  const [expandedTheoryId, setExpandedTheoryId] = useState<string | null>(null);
-  const [theoryLikes, setTheoryLikes] = useState<Record<string, number>>({});
 
   // Load karya komunitas pengguna
   useEffect(() => {
@@ -64,13 +73,12 @@ export default function CommunityPage() {
     }
   }, []);
 
-  const handleLikeLocal = async (e: React.MouseEvent, id: string) => {
+  const handleLike = async (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (likedMap[id]) return;
 
-    // Optimistic update
     setLores((prev) =>
       prev.map((item) => (item.id === id ? { ...item, likesCount: item.likesCount + 1 } : item))
     );
@@ -84,13 +92,6 @@ export default function CommunityPage() {
     } catch (err) {
       console.error("Gagal update like di server:", err);
     }
-  };
-
-  const handleLikeTheory = (id: string) => {
-    setTheoryLikes((prev) => ({
-      ...prev,
-      [id]: (prev[id] || 0) + 1,
-    }));
   };
 
   // Topik unik karya lokal
@@ -116,9 +117,9 @@ export default function CommunityPage() {
     const matchSearch =
       item.title.toLowerCase().includes(theorySearch.toLowerCase()) ||
       item.summary.toLowerCase().includes(theorySearch.toLowerCase()) ||
-      item.author.toLowerCase().includes(theorySearch.toLowerCase()) ||
+      item.authorName.toLowerCase().includes(theorySearch.toLowerCase()) ||
       item.topic.toLowerCase().includes(theorySearch.toLowerCase()) ||
-      item.tags.some((tag) => tag.toLowerCase().includes(theorySearch.toLowerCase()));
+      (item.tags && item.tags.some((tag) => tag.toLowerCase().includes(theorySearch.toLowerCase())));
 
     const matchTopic = theoryTopic === "Semua" || item.topic === theoryTopic;
     return matchSearch && matchTopic;
@@ -142,7 +143,7 @@ export default function CommunityPage() {
           </h1>
           <p className="text-sm text-parchment-dim leading-relaxed">
             Tempat berkumpulnya para pengelana untuk menyusun hipotesis, mengulik sejarah bangsa
-            kuno yang tenggelam, serta membaca arsip teori terbaik dari komunitas pecinta Genshin Impact.
+            kuno yang tenggelam, serta membaca naskah analisis teori terlengkap dari komunitas.
           </p>
         </div>
 
@@ -159,18 +160,6 @@ export default function CommunityPage() {
       <div className="flex items-center justify-between border-b border-gold-300/15 mb-8 flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveTab("community")}
-            className={`flex items-center gap-2 pb-3 px-2 text-sm font-semibold tracking-wide border-b-2 transition-all ${
-              activeTab === "community"
-                ? "border-gold-300 text-gold-300"
-                : "border-transparent text-parchment-dim hover:text-parchment"
-            }`}
-          >
-            <BookOpen size={18} />
-            <span>Karya Pengelana ({lores.length})</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab("theories")}
             className={`flex items-center gap-2 pb-3 px-2 text-sm font-semibold tracking-wide border-b-2 transition-all ${
               activeTab === "theories"
@@ -180,6 +169,18 @@ export default function CommunityPage() {
           >
             <Compass size={18} className="text-gold-300" />
             <span>Koleksi Teori Komunitas ({theories.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("community")}
+            className={`flex items-center gap-2 pb-3 px-2 text-sm font-semibold tracking-wide border-b-2 transition-all ${
+              activeTab === "community"
+                ? "border-gold-300 text-gold-300"
+                : "border-transparent text-parchment-dim hover:text-parchment"
+            }`}
+          >
+            <BookOpen size={18} />
+            <span>Karya Pengelana Lokal ({lores.length})</span>
           </button>
         </div>
 
@@ -191,9 +192,9 @@ export default function CommunityPage() {
           />
           <input
             type="text"
-            value={activeTab === "community" ? searchQuery : theorySearch}
+            value={activeTab === "theories" ? theorySearch : searchQuery}
             onChange={(e) =>
-              activeTab === "community" ? setSearchQuery(e.target.value) : setTheorySearch(e.target.value)
+              activeTab === "theories" ? setTheorySearch(e.target.value) : setSearchQuery(e.target.value)
             }
             placeholder="Cari naskah atau topik..."
             className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-celestia-900 border border-gold-300/20 text-parchment text-xs placeholder-parchment-muted/50 focus:outline-none focus:border-gold-300"
@@ -201,7 +202,91 @@ export default function CommunityPage() {
         </div>
       </div>
 
-      {/* Konten Tab 1: Karya Pengelana (User Submissions) */}
+      {/* Konten Tab 1: Koleksi Teori Komunitas Global (Klik Menuju Naskah Penuh) */}
+      {activeTab === "theories" && (
+        <div className="space-y-6">
+          {/* Filter Topik Teori */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <span className="text-xs text-parchment-muted shrink-0">Topik:</span>
+            {theoryTopics.map((t) => (
+              <button
+                key={t}
+                onClick={() => setTheoryTopic(t)}
+                className={`px-3 py-1 rounded-full text-xs shrink-0 transition-colors border ${
+                  theoryTopic === t
+                    ? "bg-gold-300/20 text-gold-300 border-gold-300/40"
+                    : "bg-celestia-900/60 text-parchment-dim border-gold-300/10 hover:text-parchment"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTheories.map((theory) => (
+              <Link
+                key={theory.slug}
+                href={`/community/${theory.slug}`}
+                className="group flex flex-col justify-between rounded-2xl bg-celestia-900/60 border border-gold-300/15 hover:border-gold-300/45 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-gold-300/10"
+              >
+                {/* Sampul Gambar */}
+                {theory.coverImageUrl && (
+                  <div className="relative h-48 w-full overflow-hidden bg-celestia-950">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={theory.coverImageUrl}
+                      alt={theory.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-celestia-900 via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-celestia-950/85 backdrop-blur-md text-gold-300 border border-gold-300/30 uppercase tracking-wider">
+                      {theory.topic}
+                    </span>
+                  </div>
+                )}
+
+                {/* Konten Card */}
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <h2
+                      className="text-lg font-bold text-parchment group-hover:text-gold-200 transition-colors line-clamp-2 leading-snug"
+                      style={{ fontFamily: "Cinzel, Georgia, serif" }}
+                    >
+                      {theory.title}
+                    </h2>
+                    <p className="text-xs text-parchment-dim line-clamp-3 leading-relaxed">
+                      {theory.summary}
+                    </p>
+                  </div>
+
+                  {/* Footer Card */}
+                  <div className="pt-4 mt-5 border-t border-gold-300/10 flex items-center justify-between text-xs text-parchment-muted">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-parchment-muted">Penyusun:</span>
+                      <span className="text-gold-300 font-medium truncate max-w-[110px]">
+                        {theory.authorName}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 text-rose-300/90">
+                        <Heart size={13} className="fill-rose-400/40" />
+                        <span>{theory.likesCount}</span>
+                      </span>
+                      <span className="text-xs text-gold-300 font-semibold group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                        Baca <ArrowRight size={13} />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Konten Tab 2: Karya Pengelana Lokal */}
       {activeTab === "community" && (
         <div className="space-y-6">
           {/* Filter Topik */}
@@ -231,13 +316,13 @@ export default function CommunityPage() {
             </div>
           ) : filteredLores.length === 0 ? (
             <div className="text-center py-16 p-8 rounded-3xl bg-celestia-900/40 border border-gold-300/10 space-y-3">
-              <p className="text-base text-parchment font-semibold">Belum Ada Lore yang Ditemukan</p>
-              <p className="text-xs text-parchment-dim max-w-md mx-auto">
-                Jadilah pengelana pertama yang membagikan teori atau ceritamu kepada komunitas!
+              <p className="text-base text-parchment font-semibold">Belum Ada Lore Pengguna yang Diterbitkan</p>
+              <p className="text-xs text-parchment-dim max-w-md mx-auto leading-relaxed">
+                Jadilah pengelana pertama yang membagikan naskah atau teorimu ke dalam arsip Teyvat!
               </p>
               <Link
                 href="/buat-lore"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 text-xs transition-colors"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 text-xs transition-colors shadow-lg shadow-gold-400/20"
               >
                 <PlusCircle size={15} /> Buat Lore Pertama
               </Link>
@@ -250,7 +335,7 @@ export default function CommunityPage() {
                   <Link
                     key={item.id}
                     href={`/community/${item.slug}`}
-                    className="group flex flex-col justify-between rounded-2xl bg-celestia-900/60 border border-gold-300/15 hover:border-gold-300/40 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gold-300/5"
+                    className="group flex flex-col justify-between rounded-2xl bg-celestia-900/60 border border-gold-300/15 hover:border-gold-300/40 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-gold-300/5"
                   >
                     {item.coverImageUrl ? (
                       <div className="relative h-44 w-full overflow-hidden bg-celestia-950">
@@ -261,7 +346,7 @@ export default function CommunityPage() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-celestia-900 via-transparent to-transparent" />
-                        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-celestia-950/80 backdrop-blur-md text-gold-300 border border-gold-300/30 uppercase tracking-wider">
+                        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-celestia-950/85 backdrop-blur-md text-gold-300 border border-gold-300/30 uppercase tracking-wider">
                           {item.topic}
                         </span>
                       </div>
@@ -297,7 +382,7 @@ export default function CommunityPage() {
                         <div className="flex items-center gap-3">
                           <button
                             type="button"
-                            onClick={(e) => handleLikeLocal(e, item.id!)}
+                            onClick={(e) => handleLike(e, item.id!)}
                             className={`flex items-center gap-1 transition-colors ${
                               isLiked ? "text-rose-400 font-bold" : "hover:text-rose-400"
                             }`}
@@ -318,118 +403,6 @@ export default function CommunityPage() {
               })}
             </div>
           )}
-        </div>
-      )}
-
-      {/* Konten Tab 2: Koleksi Teori Komunitas Global (JSON Bebas Blokir) */}
-      {activeTab === "theories" && (
-        <div className="space-y-6">
-          {/* Filter Topik Teori */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            <span className="text-xs text-parchment-muted shrink-0">Topik:</span>
-            {theoryTopics.map((t) => (
-              <button
-                key={t}
-                onClick={() => setTheoryTopic(t)}
-                className={`px-3 py-1 rounded-full text-xs shrink-0 transition-colors border ${
-                  theoryTopic === t
-                    ? "bg-gold-300/20 text-gold-300 border-gold-300/40"
-                    : "bg-celestia-900/60 text-parchment-dim border-gold-300/10 hover:text-parchment"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          <div className="space-y-4">
-            {filteredTheories.map((theory) => {
-              const isExpanded = expandedTheoryId === theory.id;
-              const currentLikes = theory.likes + (theoryLikes[theory.id] || 0);
-
-              return (
-                <div
-                  key={theory.id}
-                  className="p-6 rounded-2xl bg-celestia-900/60 border border-gold-300/15 hover:border-gold-300/35 transition-all space-y-4"
-                >
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-300/15 text-gold-300 border border-gold-300/30 uppercase tracking-wider">
-                          {theory.topic}
-                        </span>
-                        <span className="text-xs text-parchment-muted">
-                          Sumber: <strong className="text-gold-200">{theory.source}</strong> ({theory.author})
-                        </span>
-                        <span className="text-xs text-parchment-muted">• {theory.readingTime}</span>
-                      </div>
-
-                      <h2
-                        className="text-lg font-bold text-parchment cursor-pointer hover:text-gold-200 transition-colors"
-                        style={{ fontFamily: "Cinzel, Georgia, serif" }}
-                        onClick={() => setExpandedTheoryId(isExpanded ? null : theory.id)}
-                      >
-                        {theory.title}
-                      </h2>
-
-                      <p className="text-xs text-parchment-dim leading-relaxed">
-                        {theory.summary}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => setExpandedTheoryId(isExpanded ? null : theory.id)}
-                      className="px-3.5 py-1.5 rounded-xl bg-celestia-800 text-parchment-dim hover:text-gold-300 border border-gold-300/20 text-xs flex items-center gap-1.5 transition-colors self-start shrink-0"
-                    >
-                      <span>{isExpanded ? "Tutup Naskah" : "Baca Uraian Lengkap"}</span>
-                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                    </button>
-                  </div>
-
-                  {/* Isi Lengkap jika Di-expand */}
-                  {isExpanded && (
-                    <div className="pt-4 border-t border-gold-300/15 space-y-4 animate-fade-in">
-                      <div className="p-5 rounded-xl bg-celestia-950/80 border border-gold-300/10 text-xs sm:text-sm text-parchment/95 whitespace-pre-wrap leading-relaxed">
-                        {theory.content}
-                      </div>
-
-                      {/* Tagar */}
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <Tag size={13} className="text-gold-300" />
-                        {theory.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[11px] px-2.5 py-0.5 rounded-md bg-celestia-900 border border-gold-300/10 text-parchment-dim"
-                          >
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Footer Card */}
-                  <div className="pt-3 border-t border-gold-300/10 flex items-center justify-between text-xs text-parchment-muted">
-                    <div className="flex items-center gap-4">
-                      <button
-                        onClick={() => handleLikeTheory(theory.id)}
-                        className="flex items-center gap-1 text-gold-300 hover:text-gold-200 transition-colors"
-                      >
-                        <Heart size={14} className="fill-gold-300/30" />
-                        <span>{currentLikes.toLocaleString()} Suka</span>
-                      </button>
-                      <span className="flex items-center gap-1">
-                        <MessageSquare size={14} />
-                        <span>{theory.commentsCount} Diskusi</span>
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-parchment-muted">{theory.date}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       )}
     </div>
