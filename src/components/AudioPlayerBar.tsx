@@ -1,6 +1,6 @@
 "use client";
 
-import { useAudio } from "@/context/AudioContext";
+import { useAudio, VoicePreset } from "@/context/AudioContext";
 import {
   Play,
   Pause,
@@ -11,6 +11,9 @@ import {
   ChevronUp,
   Sparkles,
   Headphones,
+  Settings2,
+  User,
+  Sliders,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -32,15 +35,21 @@ export default function AudioPlayerBar() {
     playbackRate,
     volume,
     isAiVoice,
+    voicePreset,
+    availableVoices,
+    selectedVoiceURI,
     togglePlay,
     seek,
     setRate,
     setVolume,
+    setVoicePreset,
+    setSelectedVoiceURI,
     stop,
   } = useAudio();
 
   const [minimized, setMinimized] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [showVoiceSettings, setShowVoiceSettings] = useState(false);
 
   if (!track) return null;
 
@@ -77,9 +86,80 @@ export default function AudioPlayerBar() {
     );
   }
 
-  // Full Sticky Player Bar di bawah layar
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 audio-bar-enter shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.6)]">
+      {/* Panel Pengaturan Model Suara Narator AI (Slide Up) */}
+      {showVoiceSettings && isAiVoice && (
+        <div className="bg-celestia-950/98 border-t border-gold-300/30 px-4 sm:px-6 py-4 shadow-2xl backdrop-blur-xl animate-fade-in">
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-gold-300 text-xs font-bold uppercase tracking-wider mb-1">
+                <Settings2 size={14} />
+                Pilihan Model Suara Narator AI
+              </div>
+              <p className="text-[11px] text-parchment-muted">
+                Pilih karakter nada suara atau pilih model suara yang terpasang di perangkatmu.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Preset Model: Wanita vs Pria vs Standar */}
+              <div className="flex items-center gap-1 bg-celestia-900 p-1 rounded-xl border border-gold-300/20">
+                {[
+                  { id: "female", label: "🌸 Wanita (Jernih)" },
+                  { id: "male", label: "🛡️ Pria (Kharismatik)" },
+                  { id: "standard", label: "⚡ Standar" },
+                ].map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setVoicePreset(p.id as VoicePreset)}
+                    className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                      voicePreset === p.id
+                        ? "bg-gradient-to-r from-gold-400 to-gold-200 text-celestia-950 font-bold shadow-sm"
+                        : "text-parchment-muted hover:text-parchment"
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Dropdown Spesifik Engine Suara */}
+              {availableVoices.length > 0 && (
+                <div className="flex items-center gap-1.5 bg-celestia-900 px-3 py-1.5 rounded-xl border border-gold-300/20">
+                  <User size={13} className="text-gold-300" />
+                  <select
+                    value={selectedVoiceURI}
+                    onChange={(e) => setSelectedVoiceURI(e.target.value)}
+                    className="bg-transparent text-xs text-parchment outline-none cursor-pointer max-w-[200px] truncate"
+                  >
+                    <option value="" className="bg-celestia-900 text-parchment">
+                      Auto (Default Sistem)
+                    </option>
+                    {availableVoices.map((v) => (
+                      <option
+                        key={v.voiceURI}
+                        value={v.voiceURI}
+                        className="bg-celestia-900 text-parchment text-xs"
+                      >
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <button
+                onClick={() => setShowVoiceSettings(false)}
+                className="text-xs text-parchment-muted hover:text-gold-300 px-2.5 py-1 rounded-lg border border-gold-300/20"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Garis Aksen Emas Khas Genshin */}
       <div className="gold-divider" />
 
@@ -129,7 +209,7 @@ export default function AudioPlayerBar() {
                   </span>
                 ) : (
                   <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    🎙️ Suara Karakter
+                    🎙️ Suara Karakter (JP)
                   </span>
                 )}
                 {isPlaying && (
@@ -140,7 +220,10 @@ export default function AudioPlayerBar() {
                   </span>
                 )}
               </div>
-              <p className="text-gold-200 text-sm font-semibold truncate" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
+              <p
+                className="text-gold-200 text-sm font-semibold truncate"
+                style={{ fontFamily: "Cinzel, Georgia, serif" }}
+              >
                 {track.title}
               </p>
               {track.character && (
@@ -170,8 +253,23 @@ export default function AudioPlayerBar() {
             </button>
           </div>
 
-          {/* Kontrol Kecepatan (Speed) & Volume */}
+          {/* Kontrol Model Suara, Kecepatan & Volume */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Tombol Pengaturan Model Suara Narator AI */}
+            {isAiVoice && (
+              <button
+                onClick={() => setShowVoiceSettings(!showVoiceSettings)}
+                className={`p-1.5 rounded-lg border transition-all ${
+                  showVoiceSettings
+                    ? "bg-gold-400 text-celestia-950 border-gold-300 shadow-sm"
+                    : "bg-celestia-800/80 text-gold-300 border-gold-300/20 hover:border-gold-300/50"
+                }`}
+                title="Pilih Model Suara Narator AI (Wanita / Pria / Engine)"
+              >
+                <Settings2 size={16} />
+              </button>
+            )}
+
             {/* Speed Rate */}
             <div className="hidden sm:flex items-center gap-1 bg-celestia-800/80 p-0.5 rounded-lg border border-gold-300/15">
               {RATES.map((r) => (

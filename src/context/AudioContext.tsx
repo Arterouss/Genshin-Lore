@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useRef, useState, useCallback, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 
 export interface AudioTrack {
   title: string;
@@ -12,6 +19,14 @@ export interface AudioTrack {
   isAiVoice?: boolean;
 }
 
+export type VoicePreset = "female" | "male" | "standard";
+
+export interface VoiceOption {
+  name: string;
+  lang: string;
+  voiceURI: string;
+}
+
 interface AudioContextValue {
   track: AudioTrack | null;
   isPlaying: boolean;
@@ -20,18 +35,22 @@ interface AudioContextValue {
   playbackRate: number;
   volume: number;
   isAiVoice: boolean;
+  voicePreset: VoicePreset;
+  availableVoices: VoiceOption[];
+  selectedVoiceURI: string;
   play: (track: AudioTrack) => void;
   togglePlay: () => void;
   seek: (time: number) => void;
   setRate: (rate: number) => void;
   setVolume: (vol: number) => void;
+  setVoicePreset: (preset: VoicePreset) => void;
+  setSelectedVoiceURI: (uri: string) => void;
   stop: () => void;
 }
 
 const AudioCtx = createContext<AudioContextValue | null>(null);
 
 function chunkText(text: string, maxLen = 160): string[] {
-  // Bersihkan tag HTML atau format markdown jika ada
   const clean = text
     .replace(/<[^>]+>/g, " ")
     .replace(/[*#_`]/g, " ")
@@ -40,7 +59,6 @@ function chunkText(text: string, maxLen = 160): string[] {
 
   if (!clean) return [];
 
-  // Pecah per tanda baca kalimat (. ! ? \n)
   const sentences = clean.match(/[^.!?\n]+[.!?\n]*/g) || [clean];
   const chunks: string[] = [];
   let current = "";
@@ -69,12 +87,51 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [playbackRate, setPlaybackRateState] = useState(1);
   const [volume, setVolumeState] = useState(1);
 
-  // AI Speech Synthesis refs
+  // Model & Preset Suara Narator AI
+  const [voicePreset, setVoicePresetState] = useState<VoicePreset>("female");
+  const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
+  const [selectedVoiceURI, setSelectedVoiceURIState] = useState<string>("");
+
+  // Refs
   const speechChunksRef = useRef<string[]>([]);
   const chunkIndexRef = useRef<number>(0);
   const isAiRef = useRef<boolean>(false);
   const rateRef = useRef<number>(1);
   const volRef = useRef<number>(1);
+  const presetRef = useRef<VoicePreset>("female");
+  const voiceUriRef = useRef<string>("");
+
+  // Muat daftar suara peramban (Web Speech API)
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+
+    const updateVoices = () => {
+      const vs = window.speechSynthesis.getVoices();
+      const mapped: VoiceOption[] = vs.map((v) => ({
+        name: v.name,
+        lang: v.lang,
+        voiceURI: v.voiceURI,
+      }));
+      setAvailableVoices(mapped);
+
+      // Cari suara default: Utamakan Bahasa Indonesia wanita/natural
+      if (!voiceUriRef.current && mapped.length > 0) {
+        const idVoice = mapped.find(
+          (v) =>
+            v.lang.toLowerCase().startsWith("id") ||
+            v.name.toLowerCase().includes("indonesia") ||
+            v.name.toLowerCase().includes("gadis")
+        );
+        if (idVoice) {
+          voiceUriRef.current = idVoice.voiceURI;
+          setSelectedVoiceURIState(idVoice.voiceURI);
+        }
+      }
+    };
+
+    updateVoices();
+    window.speechSynthesis.onvoiceschanged = updateVoices;
+  }, []);
 
   const getAudio = useCallback(() => {
     if (!audioRef.current) {
@@ -88,7 +145,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     return audioRef.current;
   }, []);
 
-  // Hentikan semua audio (HTML5 & Speech)
   const stopAll = useCallback(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
@@ -100,7 +156,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setIsPlaying(false);
   }, []);
 
-  // Jalankan narasi segmen kalimat SpeechSynthesis
   const speakChunk = useCallback((index: number) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
@@ -118,14 +173,33 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     utterance.rate = rateRef.current;
     utterance.volume = volRef.current;
 
-    // Pilih suara: prioritaskan Bahasa Indonesia, jika tidak ada cari English
-    const voices = window.speechSynthesis.getVoices();
-    const idVoice = voices.find((v) => v.lang.toLowerCase().startsWith("id"));
-    const enVoice = voices.find((v) => v.lang.toLowerCase().startsWith("en"));
-    if (idVoice) {
-      utterance.voice = idVoice;
-    } else if (enVoice) {
-      utterance.voice = enVoice;
+    // Terapkan pitch sesuai model preset suara
+    if (presetRef.current === "female") {
+      utterance.pitch = 1.15; // Suara wanita lebih cerah & jernih
+    } else if (presetRef.current === "male") {
+      utterance.pitch = 0.85; // Suara pria lebih berat & berwibawa
+    } else {
+      utterance.pitch = 1.0;
+    }
+
+    // Pilih suara
+    const allVoices = window.speechSynthesis.getVoices();
+    let pickedVoice: SpeechSynthesisVoice | undefined;
+
+    if (voiceUriRef.current) {
+      pickedVoice = allVoices.find((v) => v.voiceURI === voiceUriRef.current);
+    }
+
+    if (!pickedVoice) {
+      // Prioritaskan ID
+      pickedVoice =
+        allVoices.find((v) => v.lang.toLowerCase().startsWith("id")) ||
+        allVoices.find((v) => v.lang.toLowerCase().startsWith("en")) ||
+        allVoices[0];
+    }
+
+    if (pickedVoice) {
+      utterance.voice = pickedVoice;
     }
 
     utterance.onend = () => {
@@ -155,7 +229,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       setTrack({ ...newTrack, isAiVoice: useAi });
 
       if (!useAi && newTrack.url) {
-        // Mode A: File Audio Asli (MP3 / Podcast)
+        // Mode A: File Audio Resmi (Misal: Rekaman Suara Karakter JP)
         const audio = getAudio();
         audio.src = newTrack.url;
         audio.playbackRate = rateRef.current;
@@ -167,7 +241,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           .catch((err) => console.warn("Audio play blocked/failed:", err));
       } else {
         // Mode B: Narator AI (Web Speech Synthesis)
-        const rawText = newTrack.speechText || `${newTrack.title}. ${newTrack.character ? `Kisah ${newTrack.character}.` : ""} ${newTrack.region ? `Wilayah ${newTrack.region}.` : ""}`;
+        const rawText =
+          newTrack.speechText ||
+          `${newTrack.title}. ${newTrack.character ? `Kisah ${newTrack.character}.` : ""} ${
+            newTrack.region ? `Wilayah ${newTrack.region}.` : ""
+          }`;
         const chunks = chunkText(rawText);
         speechChunksRef.current = chunks;
         chunkIndexRef.current = 0;
@@ -177,7 +255,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
         if (typeof window !== "undefined" && "speechSynthesis" in window) {
           window.speechSynthesis.cancel();
-          // Delay tipis agar speech queue browser siap
           setTimeout(() => {
             speakChunk(0);
           }, 60);
@@ -270,6 +347,33 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     [getAudio]
   );
 
+  const setVoicePreset = useCallback(
+    (preset: VoicePreset) => {
+      presetRef.current = preset;
+      setVoicePresetState(preset);
+
+      // Jika sedang memutar suara AI, restart chunk aktif dengan pitch baru
+      if (isAiRef.current && isPlaying && typeof window !== "undefined") {
+        window.speechSynthesis.cancel();
+        speakChunk(chunkIndexRef.current);
+      }
+    },
+    [isPlaying, speakChunk]
+  );
+
+  const setSelectedVoiceURI = useCallback(
+    (uri: string) => {
+      voiceUriRef.current = uri;
+      setSelectedVoiceURIState(uri);
+
+      if (isAiRef.current && isPlaying && typeof window !== "undefined") {
+        window.speechSynthesis.cancel();
+        speakChunk(chunkIndexRef.current);
+      }
+    },
+    [isPlaying, speakChunk]
+  );
+
   const stop = useCallback(() => {
     stopAll();
     setTrack(null);
@@ -277,7 +381,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setDuration(0);
   }, [stopAll]);
 
-  // Cleanup saat unmount
   useEffect(() => {
     return () => {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -296,11 +399,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         playbackRate,
         volume,
         isAiVoice: Boolean(track?.isAiVoice),
+        voicePreset,
+        availableVoices,
+        selectedVoiceURI,
         play,
         togglePlay,
         seek,
         setRate,
         setVolume,
+        setVoicePreset,
+        setSelectedVoiceURI,
         stop,
       }}
     >

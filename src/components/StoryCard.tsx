@@ -107,9 +107,9 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             {story.readingTime}
           </span>
           {story.audioUrl ? (
-            <span className="flex items-center gap-1 text-emerald-300" title="Tersedia rekaman suara resmi karakter">
+            <span className="flex items-center gap-1 text-emerald-300" title="Tersedia rekaman suara resmi karakter bahasa Jepang">
               <Volume2 size={12} />
-              Suara Karakter
+              Suara JP
             </span>
           ) : (
             <span className="flex items-center gap-1 text-anemo" title="Tersedia Mode Narator Suara AI">
@@ -152,7 +152,7 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             ) : story.audioUrl ? (
               <>
                 <Volume2 size={13} className="text-emerald-300" />
-                <span>Suara</span>
+                <span>Suara JP</span>
               </>
             ) : (
               <>

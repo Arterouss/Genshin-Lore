@@ -5,8 +5,8 @@ region: "Mondstadt"
 element: "pyro"
 category: "character-backstory"
 readingTime: "12 Menit"
-audioUrl: "https://static.wikia.nocookie.net/gensin-impact/images/6/63/VO_Diluc_Hello.ogg/revision/latest?cb=20210110215656"
-audioDuration: "Suara Karakter"
+audioUrl: "https://static.wikia.nocookie.net/gensin-impact/images/c/c6/VO_JA_Diluc_Hello.ogg/revision/latest?cb=20210526183331"
+audioDuration: "Suara Karakter (JP)"
 summary: "▌Master of the Dawn Winery · Diluc
 
 I will keep marching on until dawn."

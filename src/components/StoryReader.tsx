@@ -148,7 +148,7 @@ export default function StoryReader({ story }: { story: StoryFull }) {
                 ) : (
                   <>
                     <Volume2 size={14} className="text-emerald-300" />
-                    <span>🎙️ Suara Karakter</span>
+                    <span>🎙️ Suara Karakter (JP)</span>
                   </>
                 )}
               </button>
