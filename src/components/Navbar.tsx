@@ -154,6 +154,20 @@ export default function Navbar() {
                       <p className="text-[10px] text-parchment-muted">Khaenri&apos;ah & Reruntuhan Kuno</p>
                     </div>
                   </Link>
+
+                  <div className="pt-2 mt-1 border-t border-gold-300/10">
+                    <Link
+                      href="/katalog"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-gold-300 hover:bg-gold-400/10 hover:text-gold-200 transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <BookOpen size={14} />
+                        Semua Katalog (60+)
+                      </span>
+                      <span>→</span>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -270,6 +284,14 @@ export default function Navbar() {
               >
                 <Compass size={14} className="text-purple-300" />
                 <span>World Lore & Rahasia Dunia</span>
+              </Link>
+              <Link
+                href="/katalog"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 text-xs font-bold text-gold-300 hover:text-gold-200 pt-1 border-t border-gold-300/10"
+              >
+                <BookOpen size={14} />
+                <span>Semua Katalog Cerita (60+) →</span>
               </Link>
             </div>
 
