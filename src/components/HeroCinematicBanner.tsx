@@ -54,12 +54,25 @@ const SCENES: Scene[] = [
     videoSrc: "/media/teyvat-scene-3.webm",
     poster: "/media/teyvat-hero-poster.webp",
   },
+  {
+    id: "scene-4",
+    tag: "Gerbang Surgawi: Celestia & Pengelana",
+    region: "Takdir Dunia",
+    title: "Membuka Gerbang Takdir & Misteri Benua Teyvat",
+    subtitle:
+      "Dua pengelana melintasi lautan bintang dan terdampar di dunia Teyvat. Bersama Paimon, mulailah pengembaraan mencari saudara kembar yang hilang.",
+    videoSrc: "/media/teyvat-hero.webm",
+    poster: "/media/teyvat-hero-poster.webp",
+  },
 ];
+
+const AUTO_ROTATE_MS = 6000;
 
 export default function HeroCinematicBanner() {
   const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const scene = SCENES[currentSceneIdx];
@@ -72,16 +85,28 @@ export default function HeroCinematicBanner() {
         videoRef.current.play().catch(() => {});
       }
     }
+    setProgress(0);
   }, [currentSceneIdx]);
 
-  // Otomatis berpindah scene setiap 12 detik jika sedang play
+  // Otomatis berpindah scene setiap 6 detik dengan progress bar
   useEffect(() => {
     if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setCurrentSceneIdx((prev) => (prev + 1) % SCENES.length);
-    }, 12000);
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+    const intervalTime = 60;
+    const totalSteps = AUTO_ROTATE_MS / intervalTime;
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      setProgress((step / totalSteps) * 100);
+      if (step >= totalSteps) {
+        step = 0;
+        setCurrentSceneIdx((prev) => (prev + 1) % SCENES.length);
+        setProgress(0);
+      }
+    }, intervalTime);
+
+    return () => clearInterval(timer);
+  }, [isPlaying, currentSceneIdx]);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -100,10 +125,12 @@ export default function HeroCinematicBanner() {
   };
 
   const prevScene = () => {
+    setProgress(0);
     setCurrentSceneIdx((prev) => (prev - 1 + SCENES.length) % SCENES.length);
   };
 
   const nextScene = () => {
+    setProgress(0);
     setCurrentSceneIdx((prev) => (prev + 1) % SCENES.length);
   };
 
@@ -116,6 +143,13 @@ export default function HeroCinematicBanner() {
 
   return (
     <div className="relative w-full min-h-[92vh] sm:min-h-screen flex flex-col justify-between overflow-hidden border-b border-gold-300/20 bg-celestia-950">
+      {/* ── Auto-Slide Gold Progress Bar di Paling Atas ── */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-celestia-900/60 z-30 overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-gold-500 via-gold-300 to-amber-300 shadow-[0_0_10px_rgba(229,186,105,0.8)] transition-all ease-linear"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
       {/* ── Background Video Container (Full Selayar) ── */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video

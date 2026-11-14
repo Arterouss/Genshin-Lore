@@ -242,7 +242,7 @@ export default function DatabasePage() {
                 onChange={(e) => setSelectedElement(e.target.value)}
                 className="bg-celestia-950 border border-gold-300/15 rounded-xl px-3 py-1.5 text-xs text-parchment focus:outline-none focus:border-gold-400/50"
               >
-                <option value="all">Semua Elemen</option>
+                <option value="all">Semua Elemen (7 Elemen)</option>
                 <option value="pyro">🔥 Pyro</option>
                 <option value="hydro">💧 Hydro</option>
                 <option value="anemo">🌪️ Anemo</option>
@@ -250,6 +250,7 @@ export default function DatabasePage() {
                 <option value="dendro">🌿 Dendro</option>
                 <option value="cryo">❄️ Cryo</option>
                 <option value="geo">🔶 Geo</option>
+                <option value="none">⚪ Unaligned / Multi</option>
               </select>
             )}
 
@@ -268,6 +269,9 @@ export default function DatabasePage() {
                 <option value="Fontaine">Fontaine</option>
                 <option value="Natlan">Natlan</option>
                 <option value="Snezhnaya">Snezhnaya</option>
+                <option value="Khaenri'ah">Khaenri&apos;ah</option>
+                <option value="Nod-Krai">Nod-Krai</option>
+                <option value="Teyvat">Teyvat / Pengelana</option>
               </select>
             )}
 
@@ -667,11 +671,11 @@ export default function DatabasePage() {
 
                   <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-gold-300/15">
                     <Link
-                      href={`/cerita/character-backstory-${c.id}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold-400 text-celestia-950 font-bold text-xs hover:bg-gold-300 transition-all shadow-md"
+                      href={`/lore/character-backstory-${c.id}`}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 hover:from-gold-400 hover:to-gold-300 text-celestia-950 font-bold text-xs transition-all shadow-md"
                     >
                       <BookOpen size={14} />
-                      <span>Baca Naskah Lore Lengkap</span>
+                      <span>Buka Halaman Arsip Lore</span>
                     </Link>
                     <button
                       onClick={() => setModalItem(null)}
