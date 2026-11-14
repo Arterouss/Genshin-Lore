@@ -44,7 +44,12 @@ export function getAllStories(): StoryMeta[] {
       const { data } = matter(raw);
       const relative = path.relative(CONTENT_DIR, filePath);
       const slug = relative.replace(/\.md$/, "").replace(/\\/g, "-").replace(/\//g, "-");
-      return { slug, ...data } as StoryMeta;
+
+      const baseName = path.basename(filePath, ".md");
+      const localCharImg = path.join(process.cwd(), "public", "images", "characters", `${baseName}.png`);
+      const coverImage = data.coverImage || (fs.existsSync(localCharImg) ? `/images/characters/${baseName}.png` : undefined);
+
+      return { slug, ...data, coverImage } as StoryMeta;
     })
     .sort((a, b) =>
       new Date(b.publishedAt ?? "2000-01-01").getTime() -
@@ -79,9 +84,14 @@ export async function getStoryBySlug(slug: string): Promise<StoryFull | null> {
 
   const processed = await remark().use(remarkGfm).use(remarkHtml, { sanitize: false }).process(content);
 
+  const baseName = path.basename(filePath, ".md");
+  const localCharImg = path.join(process.cwd(), "public", "images", "characters", `${baseName}.png`);
+  const coverImage = data.coverImage || (fs.existsSync(localCharImg) ? `/images/characters/${baseName}.png` : undefined);
+
   return {
     slug,
     ...(data as Omit<StoryMeta, "slug">),
+    coverImage,
     contentHtml: processed.toString(),
   };
 }

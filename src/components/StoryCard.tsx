@@ -50,49 +50,86 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
 
   return (
     <article className="primogem-corner group relative flex flex-col bg-scroll-800 border border-gold-300/15 rounded-xl overflow-hidden hover:border-gold-300/40 transition-all duration-300 hover:glow-gold">
-      {/* Top accent line colored by element */}
-      <div
-        className={`h-0.5 w-full ${
-          story.element && story.element !== "none"
-            ? `bg-${story.element === "anemo" ? "[#72E2C4]" : story.element === "geo" ? "[#E3B342]" : story.element === "electro" ? "[#C67BF2]" : story.element === "dendro" ? "[#8FD843]" : story.element === "hydro" ? "[#4CC2F8]" : story.element === "pyro" ? "[#EF7845]" : "[#9CE8FF]"}`
-            : "bg-gradient-to-r from-gold-500 via-gold-300 to-gold-500"
-        }`}
-        style={{
-          background:
-            story.element === "anemo" ? "#72E2C4" :
-            story.element === "geo" ? "#E3B342" :
-            story.element === "electro" ? "#C67BF2" :
-            story.element === "dendro" ? "#8FD843" :
-            story.element === "hydro" ? "#4CC2F8" :
-            story.element === "pyro" ? "#EF7845" :
-            story.element === "cryo" ? "#9CE8FF" :
-            "linear-gradient(to right, #B87A1E, #E5BA69, #B87A1E)",
-        }}
-      />
+      {/* ── Character Photo / Card Cover ── */}
+      {story.coverImage ? (
+        <div className="relative w-full aspect-[16/10] overflow-hidden bg-celestia-950/90 border-b border-gold-300/15">
+          <img
+            src={story.coverImage}
+            alt={story.character || story.title}
+            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+          {/* Bottom gradient fade into card body */}
+          <div className="absolute inset-0 bg-gradient-to-t from-scroll-800 via-transparent to-black/40 pointer-events-none" />
+
+          {/* ⭐ Star Rarity Badge in the TOP-LEFT of the character photo */}
+          {story.rarity && (
+            <div className="absolute top-2.5 left-2.5 z-10">
+              <span
+                className={`inline-flex items-center gap-1.5 text-xs font-black px-2.5 py-1 rounded-lg border shadow-xl backdrop-blur-md transition-transform group-hover:scale-105 ${
+                  story.rarity === 5
+                    ? "bg-amber-950/90 text-gold-300 border-gold-400/80 shadow-[0_0_12px_rgba(229,186,105,0.4)]"
+                    : "bg-purple-950/90 text-purple-200 border-purple-400/80 shadow-[0_0_12px_rgba(198,123,242,0.4)]"
+                }`}
+                title={`Karakter Bintang ${story.rarity} (${story.rarity}★)`}
+              >
+                <span className="text-[10px] tracking-tight text-gold-300">
+                  {story.rarity === 5 ? "★★★★★" : "★★★★"}
+                </span>
+                <span className="font-extrabold">{story.rarity}★</span>
+              </span>
+            </div>
+          )}
+
+          {/* Element Badge in the TOP-RIGHT of the character photo */}
+          {story.element && story.element !== "none" && (
+            <div className="absolute top-2.5 right-2.5 z-10 drop-shadow-md">
+              <ElementBadge element={story.element} />
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Fallback Top accent line colored by element */
+        <div
+          className={`h-0.5 w-full ${
+            story.element && story.element !== "none"
+              ? `bg-${story.element === "anemo" ? "[#72E2C4]" : story.element === "geo" ? "[#E3B342]" : story.element === "electro" ? "[#C67BF2]" : story.element === "dendro" ? "[#8FD843]" : story.element === "hydro" ? "[#4CC2F8]" : story.element === "pyro" ? "[#EF7845]" : "[#9CE8FF]"}`
+              : "bg-gradient-to-r from-gold-500 via-gold-300 to-gold-500"
+          }`}
+          style={{
+            background:
+              story.element === "anemo" ? "#72E2C4" :
+              story.element === "geo" ? "#E3B342" :
+              story.element === "electro" ? "#C67BF2" :
+              story.element === "dendro" ? "#8FD843" :
+              story.element === "hydro" ? "#4CC2F8" :
+              story.element === "pyro" ? "#EF7845" :
+              story.element === "cryo" ? "#9CE8FF" :
+              "linear-gradient(to right, #B87A1E, #E5BA69, #B87A1E)",
+          }}
+        />
+      )}
 
       <div className="p-5 flex flex-col gap-3 flex-1">
-        {/* Category, Rarity & Region */}
+        {/* Category & Region */}
         <div className="flex items-center gap-2 flex-wrap">
-          {story.rarity && (
+          {!story.coverImage && story.rarity && (
             <span
-              className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2 py-0.5 rounded border shadow-sm transition-transform group-hover:scale-105 ${
+              className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2 py-0.5 rounded border shadow-sm ${
                 story.rarity === 5
-                  ? "bg-gradient-to-r from-amber-500/25 to-yellow-600/15 text-gold-300 border-gold-400/50 shadow-gold-500/10"
-                  : "bg-gradient-to-r from-purple-500/25 to-violet-600/15 text-purple-300 border-purple-400/50 shadow-purple-500/10"
+                  ? "bg-amber-500/25 text-gold-300 border-gold-400/50"
+                  : "bg-purple-500/25 text-purple-300 border-purple-400/50"
               }`}
-              title={`Karakter Bintang ${story.rarity} (${story.rarity}★)`}
             >
-              <span className="text-[10px] tracking-tighter">
-                {story.rarity === 5 ? "★★★★★" : "★★★★"}
-              </span>
+              <span>{story.rarity === 5 ? "★★★★★" : "★★★★"}</span>
               <span>{story.rarity}★</span>
             </span>
           )}
-          <span className="text-xs text-parchment-muted bg-celestia-700 px-2 py-0.5 rounded-full border border-celestia-500">
+          <span className="text-xs text-parchment-muted bg-celestia-700 px-2.5 py-0.5 rounded-full border border-celestia-500">
             {CATEGORY_LABEL[story.category] ?? story.category}
           </span>
           <span className="text-xs text-parchment-muted">{story.region}</span>
-          {story.element && story.element !== "none" && (
+          {!story.coverImage && story.element && story.element !== "none" && (
             <ElementBadge element={story.element} />
           )}
         </div>

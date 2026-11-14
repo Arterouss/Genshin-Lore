@@ -85,8 +85,34 @@ export default function StoryReader({ story }: { story: StoryFull }) {
 
       {/* Header Cerita */}
       <header className="mb-10">
+        {/* Character Image Banner in Reader Header if available */}
+        {story.coverImage && (
+          <div className="relative w-full max-h-72 aspect-[21/9] sm:aspect-[24/9] rounded-2xl overflow-hidden mb-8 border border-gold-300/25 bg-celestia-950 shadow-2xl">
+            <img
+              src={story.coverImage}
+              alt={story.character || story.title}
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-celestia-900 via-transparent to-black/30 pointer-events-none" />
+            {story.rarity && (
+              <div className="absolute top-3 left-3 z-10">
+                <span
+                  className={`inline-flex items-center gap-1.5 text-xs font-black px-3 py-1 rounded-lg border shadow-xl backdrop-blur-md ${
+                    story.rarity === 5
+                      ? "bg-amber-950/90 text-gold-300 border-gold-400/80 shadow-[0_0_12px_rgba(229,186,105,0.4)]"
+                      : "bg-purple-950/90 text-purple-200 border-purple-400/80 shadow-[0_0_12px_rgba(198,123,242,0.4)]"
+                  }`}
+                >
+                  <span className="text-gold-300">{story.rarity === 5 ? "★★★★★" : "★★★★"}</span>
+                  <span>{story.rarity}★</span>
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-2 items-center mb-4">
-          {story.rarity && (
+          {!story.coverImage && story.rarity && (
             <span
               className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border shadow-sm ${
                 story.rarity === 5

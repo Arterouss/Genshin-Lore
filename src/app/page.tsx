@@ -10,8 +10,11 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ── Hero Section ─────────────────────────────── */}
-      <section className="relative overflow-hidden min-h-[85vh] flex flex-col items-center justify-center pt-8 pb-16">
+      {/* ── 1. Full-Screen Cinematic Rotating Video Banner (Full Selayar) ── */}
+      <HeroCinematicBanner />
+
+      {/* ── 2. Hero Content Section (Bawah Banner) ── */}
+      <section id="arsip-konten" className="relative overflow-hidden py-16 sm:py-24 flex flex-col items-center justify-center">
         {/* Starfield background */}
         <div className="absolute inset-0 bg-gradient-to-b from-celestia-950 via-celestia-900 to-celestia-800" />
         {/* Decorative radial glow */}
@@ -20,11 +23,6 @@ export default function HomePage() {
         </div>
         {/* Decorative stars */}
         <Starfield />
-
-        {/* Video / GIF Cinematic Banner (Paling Atas) */}
-        <div className="relative z-10 w-full">
-          <HeroCinematicBanner />
-        </div>
 
         {/* Hero Content (Teks & Narasi Berpindah ke Bawah Banner) */}
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">

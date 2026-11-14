@@ -313,54 +313,67 @@ export default function DatabasePage() {
             <article
               key={c.id}
               onClick={() => setModalItem({ type: "characters", data: c })}
-              className="primogem-corner group cursor-pointer relative flex flex-col bg-scroll-800 border border-gold-300/15 rounded-xl p-5 hover:border-gold-300/40 transition-all duration-300 hover:glow-gold"
+              className="primogem-corner group cursor-pointer relative flex flex-col bg-scroll-800 border border-gold-300/15 rounded-xl overflow-hidden hover:border-gold-300/40 transition-all duration-300 hover:glow-gold"
             >
-              {/* Top Accent line */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1 rounded-t-xl"
-                style={{ background: ELEMENT_COLORS[c.element] || "#E5BA69" }}
-              />
+              {/* Character Card Image */}
+              <div className="relative w-full aspect-[16/11] overflow-hidden bg-celestia-950/90 border-b border-gold-300/15">
+                <img
+                  src={`/images/characters/${c.id}.png`}
+                  alt={c.name}
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-scroll-800 via-transparent to-black/40 pointer-events-none" />
 
-              {/* Header Badges */}
-              <div className="flex items-center justify-between gap-2 mb-3 mt-1">
-                <span
-                  className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2 py-0.5 rounded border shadow-sm ${
-                    c.rarity === 5
-                      ? "bg-amber-500/20 text-gold-300 border-gold-400/50 shadow-gold-500/10"
-                      : "bg-purple-500/20 text-purple-300 border-purple-400/50 shadow-purple-500/10"
-                  }`}
+                {/* ⭐ Star Rarity Badge in the TOP-LEFT of character photo */}
+                <div className="absolute top-2.5 left-2.5 z-10">
+                  <span
+                    className={`inline-flex items-center gap-1.5 text-xs font-black px-2.5 py-1 rounded-lg border shadow-xl backdrop-blur-md transition-transform group-hover:scale-105 ${
+                      c.rarity === 5
+                        ? "bg-amber-950/90 text-gold-300 border-gold-400/80 shadow-[0_0_12px_rgba(229,186,105,0.4)]"
+                        : "bg-purple-950/90 text-purple-200 border-purple-400/80 shadow-[0_0_12px_rgba(198,123,242,0.4)]"
+                    }`}
+                  >
+                    <span className="text-[10px] tracking-tight text-gold-300">
+                      {c.rarity === 5 ? "★★★★★" : "★★★★"}
+                    </span>
+                    <span>{c.rarity}★</span>
+                  </span>
+                </div>
+
+                {/* Element Badge in TOP-RIGHT */}
+                <div className="absolute top-2.5 right-2.5 z-10 drop-shadow-md">
+                  <ElementBadge element={c.element} />
+                </div>
+              </div>
+
+              <div className="p-5 flex flex-col gap-2.5 flex-1">
+                {/* Character Name & Title */}
+                <h3
+                  className="text-parchment font-bold text-lg group-hover:text-gold-200 transition-colors"
+                  style={{ fontFamily: "Cinzel, Georgia, serif" }}
                 >
-                  <span>{c.rarity === 5 ? "★★★★★" : "★★★★"}</span>
-                  <span>{c.rarity}★</span>
-                </span>
-                <ElementBadge element={c.element} />
-              </div>
+                  {c.name}
+                </h3>
+                <p className="text-xs text-gold-300/80 italic mb-1">{c.title}</p>
 
-              {/* Character Name & Title */}
-              <h3
-                className="text-parchment font-bold text-lg group-hover:text-gold-200 transition-colors"
-                style={{ fontFamily: "Cinzel, Georgia, serif" }}
-              >
-                {c.name}
-              </h3>
-              <p className="text-xs text-gold-300/80 italic mb-2">{c.title}</p>
+                {/* Meta details */}
+                <div className="text-xs text-parchment-muted space-y-1 mb-2">
+                  <p>📍 <span className="text-parchment-dim">{c.region}</span></p>
+                  <p>⚔️ <span className="text-parchment-dim">{c.weapon}</span></p>
+                  <p>🏛️ <span className="text-parchment-dim line-clamp-1">{c.affiliation}</span></p>
+                </div>
 
-              {/* Meta details */}
-              <div className="text-xs text-parchment-muted space-y-1 mb-3">
-                <p>📍 <span className="text-parchment-dim">{c.region}</span></p>
-                <p>⚔️ <span className="text-parchment-dim">{c.weapon}</span></p>
-                <p>🏛️ <span className="text-parchment-dim line-clamp-1">{c.affiliation}</span></p>
-              </div>
+                {/* Summary */}
+                <p className="text-xs text-parchment-dim line-clamp-3 leading-relaxed mb-3 flex-1">
+                  {c.summary}
+                </p>
 
-              {/* Summary */}
-              <p className="text-xs text-parchment-dim line-clamp-3 leading-relaxed mb-4 flex-1">
-                {c.summary}
-              </p>
-
-              {/* Footer action */}
-              <div className="pt-3 border-t border-gold-300/10 flex items-center justify-between text-xs text-gold-300 font-semibold">
-                <span>Rincian Profil</span>
-                <span className="text-parchment-muted group-hover:text-gold-300 transition-colors">→</span>
+                {/* Footer action */}
+                <div className="pt-3 border-t border-gold-300/10 flex items-center justify-between text-xs text-gold-300 font-semibold">
+                  <span>Rincian Profil & Lore</span>
+                  <span className="text-parchment-muted group-hover:text-gold-300 transition-colors">→</span>
+                </div>
               </div>
             </article>
           ))}
@@ -583,46 +596,61 @@ export default function DatabasePage() {
               const c = modalItem.data as CharacterInfo;
               return (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded border ${
-                        c.rarity === 5
-                          ? "bg-amber-500/20 text-gold-300 border-gold-400/50"
-                          : "bg-purple-500/20 text-purple-300 border-purple-400/50"
-                      }`}
-                    >
-                      {"★".repeat(c.rarity)} {c.rarity}★
-                    </span>
-                    <ElementBadge element={c.element} />
-                    <span className="text-xs text-parchment-muted bg-celestia-800 px-2.5 py-0.5 rounded-full border border-celestia-600">
-                      {c.region}
-                    </span>
-                  </div>
+                  <div className="flex flex-col sm:flex-row gap-5 mb-5 items-start">
+                    {/* Character Photo in Modal */}
+                    <div className="relative w-full sm:w-44 aspect-[3/4] rounded-xl overflow-hidden bg-celestia-950 border border-gold-300/30 shadow-xl flex-shrink-0">
+                      <img
+                        src={`/images/characters/${c.id}.png`}
+                        alt={c.name}
+                        className="w-full h-full object-cover object-top"
+                      />
+                      <div className="absolute top-2 left-2 z-10">
+                        <span
+                          className={`inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 rounded border shadow-lg backdrop-blur-md ${
+                            c.rarity === 5
+                              ? "bg-amber-950/90 text-gold-300 border-gold-400/80 shadow-[0_0_10px_rgba(229,186,105,0.4)]"
+                              : "bg-purple-950/90 text-purple-200 border-purple-400/80 shadow-[0_0_10px_rgba(198,123,242,0.4)]"
+                          }`}
+                        >
+                          {"★".repeat(c.rarity)} {c.rarity}★
+                        </span>
+                      </div>
+                    </div>
 
-                  <h2
-                    className="text-2xl sm:text-3xl font-black text-gold-200 mb-1"
-                    style={{ fontFamily: "Cinzel, Georgia, serif" }}
-                  >
-                    {c.name}
-                  </h2>
-                  <p className="text-xs text-gold-300 italic mb-5">{c.title}</p>
+                    <div className="flex-1 w-full">
+                      <div className="flex items-center gap-2 mb-2">
+                        <ElementBadge element={c.element} />
+                        <span className="text-xs text-parchment-muted bg-celestia-800 px-2.5 py-0.5 rounded-full border border-celestia-600">
+                          {c.region}
+                        </span>
+                      </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-celestia-950 p-4 rounded-xl border border-gold-300/15 text-xs text-parchment-dim mb-5">
-                    <div>
-                      <span className="text-parchment-muted block">Senjata</span>
-                      <strong className="text-parchment">{c.weapon}</strong>
-                    </div>
-                    <div>
-                      <span className="text-parchment-muted block">Konstelasi</span>
-                      <strong className="text-parchment">{c.constellation}</strong>
-                    </div>
-                    <div>
-                      <span className="text-parchment-muted block">Ulang Tahun</span>
-                      <strong className="text-parchment">{c.birthday}</strong>
-                    </div>
-                    <div className="col-span-2 sm:col-span-3">
-                      <span className="text-parchment-muted block">Afiliasi</span>
-                      <strong className="text-parchment">{c.affiliation}</strong>
+                      <h2
+                        className="text-2xl sm:text-3xl font-black text-gold-200 mb-1"
+                        style={{ fontFamily: "Cinzel, Georgia, serif" }}
+                      >
+                        {c.name}
+                      </h2>
+                      <p className="text-xs text-gold-300 italic mb-4">{c.title}</p>
+
+                      <div className="grid grid-cols-2 gap-2.5 bg-celestia-950 p-3.5 rounded-xl border border-gold-300/15 text-xs text-parchment-dim">
+                        <div>
+                          <span className="text-parchment-muted block">Senjata</span>
+                          <strong className="text-parchment">{c.weapon}</strong>
+                        </div>
+                        <div>
+                          <span className="text-parchment-muted block">Konstelasi</span>
+                          <strong className="text-parchment">{c.constellation}</strong>
+                        </div>
+                        <div>
+                          <span className="text-parchment-muted block">Ulang Tahun</span>
+                          <strong className="text-parchment">{c.birthday}</strong>
+                        </div>
+                        <div>
+                          <span className="text-parchment-muted block">Afiliasi</span>
+                          <strong className="text-parchment line-clamp-1">{c.affiliation}</strong>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
