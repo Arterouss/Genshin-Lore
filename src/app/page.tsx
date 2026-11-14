@@ -19,6 +19,7 @@ import {
   Zap,
   Droplets,
   Leaf,
+  Snowflake,
   Clock,
   Heart,
   Compass,
@@ -97,6 +98,24 @@ export default function HomePage() {
       icon: <Flame size={20} className="text-pyro" />,
       tagline: "Negeri Perang & Semangat Bara Kuno",
       desc: "Tanah vulkanik tempat enam suku pejuang hidup berdampingan dengan para Saurian purba.",
+    },
+    {
+      name: "Snezhnaya",
+      archon: "Tsaritsa (Archon Cryo)",
+      element: "Cryo",
+      color: "text-cyan-300 border-cyan-400/30 bg-cyan-950/20 hover:border-cyan-400/60",
+      icon: <Snowflake size={20} className="text-cyan-300" />,
+      tagline: "Negeri Musim Dingin & Takdir Zapolyarny",
+      desc: "Negeri badai salju abadi di bawah naungan Sang Tsaritsa dan Eleven Fatui Harbingers dalam konspirasi merebut ketujuh Gnosis menantang Celestia.",
+    },
+    {
+      name: "Khaenri'ah",
+      archon: "Bangsa Tanpa Dewa (Eclipse Dynasty)",
+      element: "Abyss",
+      color: "text-purple-300 border-purple-500/30 bg-purple-950/20 hover:border-purple-500/60",
+      icon: <Compass size={20} className="text-purple-300" />,
+      tagline: "Puncak Peradaban Manusia & Cataclysm",
+      desc: "Peradaban alkimia Khemia bawah tanah yang dihancurkan oleh kutukan surga 500 tahun lalu, melahirkan misteri Ordo Abyss.",
     },
   ];
 
@@ -177,14 +196,14 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gold-300 px-2 py-0.5 rounded-full bg-gold-400/10 border border-gold-300/20">
-                    126 Karakter
+                    126 Char &amp; 256 Senjata
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-parchment group-hover:text-gold-200 transition-colors mb-2">
                   Ensiklopedia Database
                 </h3>
                 <p className="text-xs text-parchment-dim leading-relaxed">
-                  Daftar lengkap 126 karakter bintang 5 &amp; 4, senjata, material asensi, dan artefak peninggalan kuno Teyvat.
+                  Daftar lengkap 126 karakter playable 5★ &amp; 4★, 256 senjata lengkap dengan naskah lore dan statistik, material asensi, dan artefak peninggalan kuno Teyvat.
                 </p>
               </div>
               <div className="mt-5 pt-4 border-t border-gold-300/10 flex items-center justify-between text-xs font-semibold text-gold-300 group-hover:text-gold-200">
@@ -282,16 +301,16 @@ export default function HomePage() {
               <p className="text-xs text-parchment-dim mt-1 font-medium">Karakter Playable (5★ &amp; 4★)</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl sm:text-4xl font-black text-cyan-300 font-display">7</p>
+              <p className="text-2xl sm:text-4xl font-black text-amber-300 font-display">256</p>
+              <p className="text-xs text-parchment-dim mt-1 font-medium">Senjata &amp; Cerita Lore</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl sm:text-4xl font-black text-cyan-300 font-display">8</p>
               <p className="text-xs text-parchment-dim mt-1 font-medium">Bangsa Wilayah Teyvat</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl sm:text-4xl font-black text-emerald-300 font-display">60+</p>
-              <p className="text-xs text-parchment-dim mt-1 font-medium">Naskah Dokumen &amp; Kisah</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl sm:text-4xl font-black text-purple-300 font-display">100%</p>
-              <p className="text-xs text-parchment-dim mt-1 font-medium">Audio Jepang &amp; Narator AI</p>
+              <p className="text-2xl sm:text-4xl font-black text-emerald-300 font-display">160+</p>
+              <p className="text-xs text-parchment-dim mt-1 font-medium">Naskah Dokumen &amp; Audio</p>
             </div>
           </div>
         </div>
@@ -300,7 +319,7 @@ export default function HomePage() {
       {/* Gold Divider */}
       <div className="gold-divider" />
 
-      {/* ── 5. Jelajahi 7 Bangsa Teyvat (The Seven Nations Showcase) ── */}
+      {/* ── 5. Jelajahi 8 Bangsa Teyvat (The Eight Nations Showcase) ── */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="flex items-center justify-center gap-2 mb-3">
@@ -316,10 +335,10 @@ export default function HomePage() {
               backgroundImage: "linear-gradient(135deg, #FFF1CE 0%, #E5BA69 50%, #C48E2E 100%)",
             }}
           >
-            Tujuh Bangsa di Bawah Langit Teyvat
+            Delapan Bangsa &amp; Wilayah di Bawah Langit Teyvat
           </h2>
           <p className="text-parchment-dim text-sm sm:text-base">
-            Setiap bangsa dipandu oleh filosofi ketuhanan yang berbeda, menyimpan peninggalan sakral dan naskah sejarah masing-masing.
+            Setiap bangsa dipandu oleh filosofi ketuhanan yang berbeda, menyimpan naskah sejarah peradaban, peninggalan kuno, hingga ambisi menantang tahta ilahi.
           </p>
         </div>
 

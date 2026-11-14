@@ -25,6 +25,8 @@ export interface WeaponInfo {
   passiveName: string;
   passiveDesc: string;
   description: string;
+  loreStory?: string;
+  iconUrl?: string;
 }
 
 export interface MaterialInfo {

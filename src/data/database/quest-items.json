@@ -34,5 +34,23 @@
     "origin": "Ditempa di Laut Purba Primordial Sea",
     "description": "Pedang suci yang ditempa dari kehendak murni Rene, Jakob, Mary-Ann, dan Ann untuk memotong benang takdir kiamat Fontaine.",
     "historicalSignificance": "Senjata ini memiliki kemampuan unik untuk beralih antara energi Arkhe Pneuma dan Ousia secara bebas, lambang transendensi kehendak manusia atas nubuatan surga."
+  },
+  {
+    "id": "delusion-of-the-tsaritsa",
+    "name": "Delusion Fatui (Mata Tiruan Kuno)",
+    "questName": "Chapter VI: Everwinter Without Mercy",
+    "chapter": "Snezhnaya & Fatui Military Lore",
+    "origin": "Diproduksi di Pabrik Rahasia Dottore, Snezhnaya",
+    "description": "Artefak buatan bermata elemen palsu yang memanfaatkan sisa-sisa dendam dewa purba gugur untuk menganugerahkan daya hancur luar biasa kepada penggunanya.",
+    "historicalSignificance": "Senjata andalan para perwira Fatui dan Eleven Harbingers. Menunjukkan penolakan mutlak Snezhnaya terhadap anugerah Vision surgawi Celestia dan tekad manusia untuk melawan takdir para dewa."
+  },
+  {
+    "id": "cryo-gnosis-vessel",
+    "name": "Cryo Gnosis (Tahta Es Terakhir)",
+    "questName": "The Grand Finale of the Seven Gnosis",
+    "chapter": "Zapolyarny Palace, Snezhnaya",
+    "origin": "Tahta Ilahi Celestia / Sang Tsaritsa",
+    "description": "Instrumen surgawi berbentuk bidak catur yang terbuat dari jasad Descender Ketiga dan memegang otoritas absolut elemen Cryo Teyvat.",
+    "historicalSignificance": "Merupakan bidak catur penutup yang disatukan oleh Sang Tsaritsa bersama 6 Gnosis lainnya di Istana Zapolyarny untuk memicu perang pembalasan melawan Heavenly Principles."
   }
 ]

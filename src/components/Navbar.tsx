@@ -209,8 +209,8 @@ export default function Navbar() {
                   >
                     <Database size={14} className="text-anemo" />
                     <div>
-                      <p className="font-semibold text-parchment">Database 126 Karakter</p>
-                      <p className="text-[10px] text-parchment-muted">Roster 5★ &amp; 4★, Senjata, Item</p>
+                      <p className="font-semibold text-parchment">Database Ensiklopedia</p>
+                      <p className="text-[10px] text-parchment-muted">126 Karakter &amp; 256 Senjata</p>
                     </div>
                   </Link>
 
@@ -364,7 +364,7 @@ export default function Navbar() {
               >
                 <div className="flex items-center gap-2">
                   <Database size={14} className="text-anemo" />
-                  <span>Database 126 Karakter &amp; Senjata</span>
+                  <span>Database 126 Karakter &amp; 256 Senjata</span>
                 </div>
                 <span>→</span>
               </Link>

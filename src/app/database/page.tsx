@@ -404,32 +404,47 @@ export default function DatabasePage() {
                 }`}
               />
 
-              {/* Rarity & Weapon Type */}
-              <div className="flex items-center justify-between gap-2 mb-3 mt-1">
-                <span
-                  className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2 py-0.5 rounded border shadow-sm ${
-                    w.rarity === 5
-                      ? "bg-amber-500/20 text-gold-300 border-gold-400/50"
-                      : w.rarity === 4
-                      ? "bg-purple-500/20 text-purple-300 border-purple-400/50"
-                      : "bg-blue-500/20 text-blue-300 border-blue-400/50"
-                  }`}
-                >
-                  <span>{"★".repeat(w.rarity)}</span>
-                  <span>{w.rarity}★</span>
-                </span>
-                <span className="text-xs text-parchment-muted bg-celestia-700 px-2 py-0.5 rounded-full border border-celestia-500">
-                  {w.type}
-                </span>
+              {/* Weapon Header with Icon & Name */}
+              <div className="flex items-start gap-3.5 mb-3 mt-1">
+                {w.iconUrl ? (
+                  <div className="w-14 h-14 rounded-xl bg-celestia-950/80 border border-gold-300/20 p-1 flex-shrink-0 overflow-hidden shadow-inner flex items-center justify-center">
+                    <img
+                      src={w.iconUrl}
+                      alt={w.name}
+                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-300/20 flex items-center justify-center text-gold-300 flex-shrink-0">
+                    <Swords size={20} />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span
+                      className={`inline-flex items-center gap-1 text-[10px] font-extrabold px-1.5 py-0.5 rounded border shadow-sm ${
+                        w.rarity === 5
+                          ? "bg-amber-500/20 text-gold-300 border-gold-400/50"
+                          : w.rarity === 4
+                          ? "bg-purple-500/20 text-purple-300 border-purple-400/50"
+                          : "bg-blue-500/20 text-blue-300 border-blue-400/50"
+                      }`}
+                    >
+                      <span>{"★".repeat(w.rarity)}</span>
+                    </span>
+                    <span className="text-[10px] text-parchment-muted bg-celestia-700 px-2 py-0.5 rounded-full border border-celestia-500">
+                      {w.type}
+                    </span>
+                  </div>
+                  <h3
+                    className="text-parchment font-bold text-base group-hover:text-gold-200 transition-colors line-clamp-1"
+                    style={{ fontFamily: "Cinzel, Georgia, serif" }}
+                  >
+                    {w.name}
+                  </h3>
+                </div>
               </div>
-
-              {/* Weapon Name */}
-              <h3
-                className="text-parchment font-bold text-lg group-hover:text-gold-200 transition-colors mb-2"
-                style={{ fontFamily: "Cinzel, Georgia, serif" }}
-              >
-                {w.name}
-              </h3>
 
               {/* Base Stats */}
               <div className="flex items-center gap-4 text-xs font-semibold bg-celestia-950/70 p-2 rounded-lg border border-gold-300/10 mb-3">
@@ -447,7 +462,7 @@ export default function DatabasePage() {
 
               {/* Footer action */}
               <div className="pt-3 border-t border-gold-300/10 flex items-center justify-between text-xs text-gold-300 font-semibold">
-                <span>Lore Senjata</span>
+                <span>Baca Lore &amp; Cerita Senjata</span>
                 <span className="text-parchment-muted group-hover:text-gold-300 transition-colors">→</span>
               </div>
             </article>
@@ -693,31 +708,44 @@ export default function DatabasePage() {
               const w = modalItem.data as WeaponInfo;
               return (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded border ${
-                        w.rarity === 5
-                          ? "bg-amber-500/20 text-gold-300 border-gold-400/50"
-                          : w.rarity === 4
-                          ? "bg-purple-500/20 text-purple-300 border-purple-400/50"
-                          : "bg-blue-500/20 text-blue-300 border-blue-400/50"
-                      }`}
-                    >
-                      {"★".repeat(w.rarity)} {w.rarity}★
-                    </span>
-                    <span className="text-xs text-parchment-muted bg-celestia-800 px-2.5 py-0.5 rounded-full border border-celestia-600">
-                      {w.type}
-                    </span>
+                  <div className="flex items-start gap-4 mb-4">
+                    {w.iconUrl && (
+                      <div className="w-20 h-20 rounded-2xl bg-celestia-950 border border-gold-300/30 p-1.5 flex-shrink-0 overflow-hidden shadow-xl flex items-center justify-center">
+                        <img
+                          src={w.iconUrl}
+                          alt={w.name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded border ${
+                            w.rarity === 5
+                              ? "bg-amber-500/20 text-gold-300 border-gold-400/50"
+                              : w.rarity === 4
+                              ? "bg-purple-500/20 text-purple-300 border-purple-400/50"
+                              : "bg-blue-500/20 text-blue-300 border-blue-400/50"
+                          }`}
+                        >
+                          {"★".repeat(w.rarity)} {w.rarity}★
+                        </span>
+                        <span className="text-xs text-parchment-muted bg-celestia-800 px-2.5 py-0.5 rounded-full border border-celestia-600">
+                          {w.type}
+                        </span>
+                      </div>
+
+                      <h2
+                        className="text-2xl sm:text-3xl font-black text-gold-200"
+                        style={{ fontFamily: "Cinzel, Georgia, serif" }}
+                      >
+                        {w.name}
+                      </h2>
+                    </div>
                   </div>
 
-                  <h2
-                    className="text-2xl sm:text-3xl font-black text-gold-200 mb-4"
-                    style={{ fontFamily: "Cinzel, Georgia, serif" }}
-                  >
-                    {w.name}
-                  </h2>
-
-                  <div className="flex items-center gap-6 bg-celestia-950 p-4 rounded-xl border border-gold-300/15 text-sm mb-5">
+                  <div className="flex items-center gap-6 bg-celestia-950 p-4 rounded-xl border border-gold-300/15 text-sm mb-4">
                     <div>
                       <span className="text-xs text-parchment-muted block">Base ATK (Lv. 90)</span>
                       <strong className="text-gold-300 text-lg font-bold">{w.baseAtk}</strong>
@@ -728,17 +756,31 @@ export default function DatabasePage() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-celestia-950/60 rounded-xl border border-gold-300/15 mb-5">
+                  <div className="p-4 bg-celestia-950/60 rounded-xl border border-gold-300/15 mb-4">
                     <h4 className="text-xs uppercase font-bold text-gold-300 tracking-wider mb-1">
                       Kemampuan Pasif: {w.passiveName}
                     </h4>
                     <p className="text-xs sm:text-sm text-parchment leading-relaxed">{w.passiveDesc}</p>
                   </div>
 
-                  <div className="mb-6">
-                    <h4 className="text-xs uppercase font-bold text-gold-300 tracking-wider mb-1">Kisah & Deskripsi Lore</h4>
-                    <p className="text-xs sm:text-sm text-parchment-dim leading-relaxed italic">{w.description}</p>
-                  </div>
+                  {w.description && (
+                    <div className="mb-4">
+                      <h4 className="text-xs uppercase font-bold text-gold-300 tracking-wider mb-1">Deskripsi Singkat</h4>
+                      <p className="text-xs text-parchment-dim leading-relaxed italic">{w.description}</p>
+                    </div>
+                  )}
+
+                  {w.loreStory && (
+                    <div className="mb-6 p-4 rounded-xl bg-celestia-950/80 border border-gold-300/15">
+                      <h4 className="text-xs uppercase font-bold text-gold-300 tracking-wider mb-2 flex items-center gap-1.5">
+                        <Scroll size={14} className="text-gold-300" />
+                        <span>Naskah Sejarah &amp; Cerita Senjata</span>
+                      </h4>
+                      <div className="text-xs sm:text-sm text-parchment-dim leading-relaxed whitespace-pre-line max-h-60 overflow-y-auto pr-2 font-serif border-l-2 border-gold-400/30 pl-3">
+                        {w.loreStory}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex justify-end pt-4 border-t border-gold-300/15">
                     <button
