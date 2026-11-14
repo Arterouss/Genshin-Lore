@@ -1,0 +1,38 @@
+[
+  {
+    "id": "holy-lyre-der-himmel",
+    "name": "Holy Lyre der Himmel",
+    "questName": "Prologue: The Outlander Who Caught the Wind",
+    "chapter": "Archon Quest Mondstadt Babak II & III",
+    "origin": "Katedral Favonius / Barbatos",
+    "description": "Kecapi suci bertabur ukiran bulu angin yang pernah dipetik oleh Archon Barbatos untuk memanggil naga Dvalin ribuan tahun silam.",
+    "historicalSignificance": "Instrumen ini dipinjam (dan dicuri secara rahasia oleh Fatui) untuk memulihkan kewarasan Dvalin dari racun korupsi Abyss Order."
+  },
+  {
+    "id": "aranyaka-book",
+    "name": "Aranyaka (Buku Cerita Hutan)",
+    "questName": "Aranyaka World Quest Series",
+    "chapter": "Sumeru Dharma Forest Lore",
+    "origin": "Diberikan oleh kaum Aranara di Vanarana",
+    "description": "Buku catatan tebal bertuliskan bahasa kuno kaum peri hutan Aranara yang mencatat kenangan Nara Varuna (saudara kembar Pengelana).",
+    "historicalSignificance": "Merupakan kunci untuk membersihkan zona Marana (Withering) dan membangkitkan kembali Festival Utsava di jantung hutan Sumeru."
+  },
+  {
+    "id": "ancient-deshret-slate",
+    "name": "Scarlet Sand Slate",
+    "questName": "Golden Slumber & Old Notes",
+    "chapter": "Gurun Pasir Sumeru / Makam King Deshret",
+    "origin": "Peradaban Kuno Al-Ahmar (King Deshret)",
+    "description": "Lempengan batu bercahaya misterius yang dapat beresonansi dengan teknologi piramida kuno King Deshret.",
+    "historicalSignificance": "Membuka otoritas lift, gerbang rahasia, dan pintu makam Al-Ahmar, mengungkap kebenaran di balik persahabatan tragis Rukkhadevata, King Deshret, dan Nabu Malikata (Goddess of Flowers)."
+  },
+  {
+    "id": "narzissenkreuz-blade",
+    "name": "Sword of Narzissenkreuz",
+    "questName": "In the Wake of Narcissus",
+    "chapter": "Fontaine Narzissenkreuz Ordo Series",
+    "origin": "Ditempa di Laut Purba Primordial Sea",
+    "description": "Pedang suci yang ditempa dari kehendak murni Rene, Jakob, Mary-Ann, dan Ann untuk memotong benang takdir kiamat Fontaine.",
+    "historicalSignificance": "Senjata ini memiliki kemampuan unik untuk beralih antara energi Arkhe Pneuma dan Ousia secara bebas, lambang transendensi kehendak manusia atas nubuatan surga."
+  }
+]

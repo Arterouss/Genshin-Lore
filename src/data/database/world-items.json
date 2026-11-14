@@ -1,0 +1,42 @@
+[
+  {
+    "id": "anemoculus",
+    "name": "Anemoculus",
+    "type": "oculus",
+    "region": "Mondstadt",
+    "description": "Substansi terkonsentrasi yang menyimpan energi Anemo murni, melayang di berbagai sudut tersembunyi Mondstadt.",
+    "locationLore": "Persembahkan kepada Statue of The Seven di Mondstadt untuk memulihkan kekuatan dewa angin dan meningkatkan stamina maksimal Sang Pengelana."
+  },
+  {
+    "id": "geoculus",
+    "name": "Geoculus",
+    "type": "oculus",
+    "region": "Liyue",
+    "description": "Batu permata mengambang berwarna keemasan yang mengandung intisari bumi pegunungan Liyue.",
+    "locationLore": "Tersebar di 131 lokasi di puncak gunung dan reruntuhan kuno Liyue. Mempersembahkannya membuka segel sembilan pilar Nine Pillars of Peace di Cuijue Slope."
+  },
+  {
+    "id": "shrine-of-depths-key",
+    "name": "Shrine of Depths Key",
+    "type": "key",
+    "region": "Mondstadt, Liyue, Inazuma, Sumeru, Fontaine, Natlan",
+    "description": "Kunci kuno berpola rumit yang mampu membuka segel kuil terlupakan Shrine of Depths.",
+    "locationLore": "Shrine of Depths adalah peninggalan peradaban kuno yang tersebar di seluruh Teyvat, menyimpan Luxurious Chest berisikan artefak berharga dan Primogem melimpah."
+  },
+  {
+    "id": "luxurious-chest",
+    "name": "Luxurious Chest",
+    "type": "chest",
+    "region": "Seluruh Benua Teyvat",
+    "description": "Tingkatan peti harta karun termewah dan paling langka di Teyvat, dihiasi ukiran emas mulia dan batu permata berkilau.",
+    "locationLore": "Hanya dapat ditemukan setelah menyelesaikan teka-teki dunia tersulit, mengalahkan bos tersembunyi, atau menyelesaikan quest bersejarah skala besar."
+  },
+  {
+    "id": "crimson-agate",
+    "name": "Crimson Agate",
+    "type": "puzzle",
+    "region": "Mondstadt (Dragonspine)",
+    "description": "Kristal merah darah yang terbentuk dari akumulasi kekuatan pohon Frostbearing Tree di pegunungan es Dragonspine.",
+    "locationLore": "Merupakan kristalisasi darah naga Durin yang meresap ke dalam es abadi Dragonspine setelah pertempurannya melawan Dvalin 500 tahun lalu."
+  }
+]

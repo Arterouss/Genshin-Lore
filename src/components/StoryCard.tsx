@@ -71,8 +71,23 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
       />
 
       <div className="p-5 flex flex-col gap-3 flex-1">
-        {/* Category & Region */}
+        {/* Category, Rarity & Region */}
         <div className="flex items-center gap-2 flex-wrap">
+          {story.rarity && (
+            <span
+              className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2 py-0.5 rounded border shadow-sm transition-transform group-hover:scale-105 ${
+                story.rarity === 5
+                  ? "bg-gradient-to-r from-amber-500/25 to-yellow-600/15 text-gold-300 border-gold-400/50 shadow-gold-500/10"
+                  : "bg-gradient-to-r from-purple-500/25 to-violet-600/15 text-purple-300 border-purple-400/50 shadow-purple-500/10"
+              }`}
+              title={`Karakter Bintang ${story.rarity} (${story.rarity}★)`}
+            >
+              <span className="text-[10px] tracking-tighter">
+                {story.rarity === 5 ? "★★★★★" : "★★★★"}
+              </span>
+              <span>{story.rarity}★</span>
+            </span>
+          )}
           <span className="text-xs text-parchment-muted bg-celestia-700 px-2 py-0.5 rounded-full border border-celestia-500">
             {CATEGORY_LABEL[story.category] ?? story.category}
           </span>

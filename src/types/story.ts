@@ -33,6 +33,7 @@ export interface StoryMeta {
   element?: Element;
   category: Category;
   readingTime: string;
+  rarity?: 4 | 5;
   audioUrl?: string;
   audioDuration?: string;
   summary: string;

@@ -1,0 +1,59 @@
+[
+  {
+    "id": "agnidus-agate",
+    "name": "Agnidus Agate Gemstone",
+    "category": "ascension",
+    "rarity": 5,
+    "region": "Natlan / Semua",
+    "source": "Hadiah Pyro Hypostasis, Pyro Regisvine, atau Weekly Boss Natlan",
+    "effect": "Material tertinggi untuk menembus batas level maksimal (Lv. 90) karakter berelemen Pyro.",
+    "description": "Permata merah membara yang menyimpan firman Dewa Perang: 'Janji telah dibuat demi impian... Perang berkobar demi nama kebenaran.'"
+  },
+  {
+    "id": "varunada-lazurite",
+    "name": "Varunada Lazurite Gemstone",
+    "category": "ascension",
+    "rarity": 5,
+    "region": "Fontaine / Semua",
+    "source": "Hadiah Oceanid, Hydro Tulpa, atau All-Devouring Narwhal",
+    "effect": "Material tertinggi untuk menembus batas level maksimal karakter berelemen Hydro.",
+    "description": "Kristal biru murni tanpa cela yang memantulkan hukum keadilan Fontaine: 'Idealku tidak ternoda... Para dewa pun dapat diadili di hadapan hukum keadilan.'"
+  },
+  {
+    "id": "philanemo-mushroom",
+    "name": "Philanemo Mushroom",
+    "category": "specialty",
+    "rarity": 1,
+    "region": "Mondstadt",
+    "source": "Tumbuh di bawah atap dan dinding rumah di Kota Mondstadt dan Springvale",
+    "description": "Jamur unik yang tumbuh menyerap hembusan angin hangat Mondstadt. Sering digunakan dalam bahan racikan obat dan kenaikan level karakter seperti Mona, Klee, dan Barbara."
+  },
+  {
+    "id": "cor-lapis",
+    "name": "Cor Lapis",
+    "category": "specialty",
+    "rarity": 1,
+    "region": "Liyue",
+    "source": "Ditambang di tebing terjal Gunung Liyue (terutama Mt. Hulao)",
+    "description": "Batu mineral mulia berwarna kuning emas yang merupakan kondensasi elemen Geo murni di dalam perut bumi Liyue, bahan penting bagi Zhongli dan Keqing."
+  },
+  {
+    "id": "naku-weed",
+    "name": "Naku Weed",
+    "category": "specialty",
+    "rarity": 1,
+    "region": "Inazuma",
+    "source": "Tumbuh di daerah dengan konsentrasi Electro tinggi di Tatarasuna dan Narukami Island",
+    "description": "Tumbuhan yang mengeluarkan dengungan listrik samar saat badai mendekat. Kelopaknya bergetar melindungi putik bunganya dari sambaran petir."
+  },
+  {
+    "id": "adeptus-temptation",
+    "name": "Adeptus' Temptation",
+    "category": "food",
+    "rarity": 5,
+    "region": "Liyue",
+    "source": "Dimasak dari Ham, Kepiting, Daging Udang, dan Jamur Matsutake",
+    "effect": "Meningkatkan ATK seluruh anggota party sebesar 372 dan CRIT Rate sebesar 12% selama 300 detik.",
+    "description": "Mahakarya kuliner tertinggi di seantero Liyue. Aromanya yang begitu surgawi konon bahkan mampu menggoda para Adepti yang hidup menyendiri di puncak awan untuk turun ke dunia fana."
+  }
+]

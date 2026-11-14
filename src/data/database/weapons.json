@@ -1,0 +1,101 @@
+[
+  {
+    "id": "mistsplitter-reforged",
+    "name": "Mistsplitter Reforged",
+    "type": "Sword",
+    "rarity": 5,
+    "baseAtk": 674,
+    "subStat": "CRIT DMG 44.1%",
+    "passiveName": "Mistsplitter's Edge",
+    "passiveDesc": "Memberikan 12% Elemental DMG Bonus untuk semua elemen dan tumpukan Mistsplitter's Emblem hingga 28%.",
+    "description": "Pedang pusaka yang pernah hancur berkeping-keping saat pertarungan melawan monster jurang abyss di Inazuma, kini ditempa ulang dengan kilauan petir ungu yang membelah kabut pekat tak berujung."
+  },
+  {
+    "id": "staff-of-homa",
+    "name": "Staff of Homa",
+    "type": "Polearm",
+    "rarity": 5,
+    "baseAtk": 608,
+    "subStat": "CRIT DMG 66.2%",
+    "passiveName": "Reckless Cinnabar",
+    "passiveDesc": "Meningkatkan Max HP sebesar 20% dan memberikan bonus ATK berdasarkan Max HP pengguna.",
+    "description": "Tongkat kayu bakar suci yang digunakan dalam ritual pemurnian kuno untuk membakar dosa, rasa sakit, dan kotoran dunia agar jiwa yang gugur dapat kembali ke pelukan perapian abadi."
+  },
+  {
+    "id": "aqua-simulacra",
+    "name": "Aqua Simulacra",
+    "type": "Bow",
+    "rarity": 5,
+    "baseAtk": 542,
+    "subStat": "CRIT DMG 88.2%",
+    "passiveName": "The Cleansing Form",
+    "passiveDesc": "HP meningkat 16%. Saat ada musuh di sekitar, DMG meningkat 20% baik saat karakter berada di medan pertempuran maupun tidak.",
+    "description": "Busur panjang dengan warna yang senantiasa berubah menyerupai aliran air bawah tanah yang tak terduga, melambangkan rahasia tersembunyi yang terkubur di kedalaman jurang The Chasm."
+  },
+  {
+    "id": "wolfs-gravestone",
+    "name": "Wolf's Gravestone",
+    "type": "Claymore",
+    "rarity": 5,
+    "baseAtk": 608,
+    "subStat": "ATK 49.6%",
+    "passiveName": "Wolfish Tracker",
+    "passiveDesc": "Meningkatkan ATK sebesar 20%. Serangan terhadap musuh dengan HP di bawah 30% meningkatkan ATK seluruh anggota party sebesar 40%.",
+    "description": "Bilah pedang raksasa tanpa tepi tajam yang tertancap di Wolvendom, penanda makam sang Kesatria Serigala dan bukti ikatan persahabatan sejati antara manusia dan Raja Serigala Andrius."
+  },
+  {
+    "id": "kaguras-verity",
+    "name": "Kagura's Verity",
+    "type": "Catalyst",
+    "rarity": 5,
+    "baseAtk": 608,
+    "subStat": "CRIT DMG 66.2%",
+    "passiveName": "Kagura Dance",
+    "passiveDesc": "Meningkatkan Elemental Skill DMG setiap kali melancarkan skill, menumpuk hingga 3 lapis untuk bonus semua Elemental DMG.",
+    "description": "Lonceng upacara suci yang digunakan oleh Yae Miko dalam ritual tarian Kagura di bawah naungan pohon Sacred Sakura Gunung Yougou, melantunkan nada-nada mistis yang menghalau roh jahat."
+  },
+  {
+    "id": "the-catch",
+    "name": "The Catch",
+    "type": "Polearm",
+    "rarity": 4,
+    "baseAtk": 510,
+    "subStat": "Energy Recharge 45.9%",
+    "passiveName": "Shanty",
+    "passiveDesc": "Meningkatkan Elemental Burst CRIT Rate sebesar 12% dan Elemental Burst DMG sebesar 32%.",
+    "description": "Tombak bercabang yang awalnya merupakan alat penangkap ikan legendaris dari Inazuma, namun ketangguhan dan keseimbangannya setara dengan senjata para kesatria elit istana."
+  },
+  {
+    "id": "favonius-sword",
+    "name": "Favonius Sword",
+    "type": "Sword",
+    "rarity": 4,
+    "baseAtk": 454,
+    "subStat": "Energy Recharge 61.3%",
+    "passiveName": "Windfall",
+    "passiveDesc": "Serangan CRIT memiliki peluang 100% menghasilkan partikel energi netral untuk memulihkan energi seluruh anggota tim.",
+    "description": "Pedang standar para ksatria Knights of Favonius, ringan dan terasah sempurna, mencerminkan semilir angin kebebasan yang melindungi rakyat Mondstadt dari ancaman bahaya."
+  },
+  {
+    "id": "the-widsith",
+    "name": "The Widsith",
+    "type": "Catalyst",
+    "rarity": 4,
+    "baseAtk": 510,
+    "subStat": "CRIT DMG 55.1%",
+    "passiveName": "Debut",
+    "passiveDesc": "Saat memasuki medan laga, memainkan melodi acak: meningkatkan ATK 120%, Elemental DMG 96%, atau Elemental Mastery 480 selama 10 detik.",
+    "description": "Buku catatan partitur musik tua yang merekam lagu-lagu pemberontakan para musisi pengembara Wanderer's Troupe dalam menggulingkan tirani bangsawan lama Mondstadt."
+  },
+  {
+    "id": "dull-blade",
+    "name": "Dull Blade",
+    "type": "Sword",
+    "rarity": 1,
+    "baseAtk": 185,
+    "subStat": "None",
+    "passiveName": "None",
+    "passiveDesc": "Tidak memiliki kemampuan pasif khusus.",
+    "description": "Pedang latihan tumpul berbahan besi sederhana yang setia menemani Sang Pengelana (Traveler) melintasi perbatasan berbagai benua sejak hari pertama terbangun di pesisir pantai Mondstadt."
+  }
+]

@@ -86,6 +86,20 @@ export default function StoryReader({ story }: { story: StoryFull }) {
       {/* Header Cerita */}
       <header className="mb-10">
         <div className="flex flex-wrap gap-2 items-center mb-4">
+          {story.rarity && (
+            <span
+              className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border shadow-sm ${
+                story.rarity === 5
+                  ? "bg-gradient-to-r from-amber-500/25 to-yellow-600/15 text-gold-300 border-gold-400/50 shadow-gold-500/20"
+                  : "bg-gradient-to-r from-purple-500/25 to-violet-600/15 text-purple-300 border-purple-400/50 shadow-purple-500/20"
+              }`}
+            >
+              <span className="text-[11px] tracking-tight">
+                {story.rarity === 5 ? "★★★★★" : "★★★★"}
+              </span>
+              <span>Bintang {story.rarity}</span>
+            </span>
+          )}
           <span className="text-xs text-parchment-muted bg-celestia-700 border border-celestia-500 px-2.5 py-0.5 rounded-full">
             {story.region}
           </span>
