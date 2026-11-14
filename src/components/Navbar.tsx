@@ -15,15 +15,20 @@ import {
   ChevronDown,
   Shield,
   Compass,
-  Scroll
+  Scroll,
+  Headphones,
+  UserCheck
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [storyDropdownOpen, setStoryDropdownOpen] = useState(false);
+  const [charDropdownOpen, setCharDropdownOpen] = useState(false);
   const [showDonateModal, setShowDonateModal] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const storyDropdownRef = useRef<HTMLDivElement>(null);
+  const charDropdownRef = useRef<HTMLDivElement>(null);
 
   // Tautan donasi
   const donationUrl = process.env.NEXT_PUBLIC_DONATION_URL?.trim();
@@ -38,8 +43,17 @@ export default function Navbar() {
   // Tutup dropdown ketika klik di luar
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
+      if (
+        storyDropdownRef.current &&
+        !storyDropdownRef.current.contains(event.target as Node)
+      ) {
+        setStoryDropdownOpen(false);
+      }
+      if (
+        charDropdownRef.current &&
+        !charDropdownRef.current.contains(event.target as Node)
+      ) {
+        setCharDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -71,9 +85,9 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* ── Desktop Modern Navigation ── */}
+          {/* ── Desktop Modern Navigation (Pemisahan Jelas Cerita vs Karakter) ── */}
           <nav className="hidden lg:flex items-center gap-1.5 bg-celestia-950/60 p-1.5 rounded-full border border-gold-300/15 shadow-inner">
-            {/* Beranda */}
+            {/* 1. Beranda */}
             <Link
               href="/"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide"
@@ -82,97 +96,152 @@ export default function Navbar() {
               <span>Beranda</span>
             </Link>
 
-            {/* Database with 126 Characters Badge */}
-            <Link
-              href="/database"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide group"
-            >
-              <Database size={14} className="text-anemo group-hover:scale-110 transition-transform" />
-              <span>Database</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-gold-400/20 text-gold-300 border border-gold-400/40">
-                126 Char
-              </span>
-            </Link>
-
-            {/* Dropdown Kategori Cerita */}
-            <div className="relative" ref={dropdownRef}>
+            {/* 2. Dropdown Cerita & Quest (Murni Alur Cerita & Quest Dunia) */}
+            <div className="relative" ref={storyDropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide"
+                onClick={() => {
+                  setStoryDropdownOpen(!storyDropdownOpen);
+                  setCharDropdownOpen(false);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide group"
               >
-                <BookOpen size={14} className="text-gold-300/80" />
-                <span>Katalog Cerita</span>
-                <ChevronDown size={12} className={`transition-transform duration-200 ${dropdownOpen ? "rotate-180 text-gold-300" : ""}`} />
+                <BookOpen size={14} className="text-gold-300/80 group-hover:scale-110 transition-transform" />
+                <span>Cerita &amp; Quest</span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ${
+                    storyDropdownOpen ? "rotate-180 text-gold-300" : ""
+                  }`}
+                />
               </button>
 
-              {dropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 bg-celestia-900 border border-gold-300/25 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in backdrop-blur-xl">
-                  <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-gold-300 font-bold border-b border-gold-300/10 mb-1">
-                    Arsip Naskah Teyvat
+              {storyDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-celestia-900 border border-gold-300/25 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in backdrop-blur-xl">
+                  <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-gold-300 font-bold border-b border-gold-300/10 mb-1 flex items-center justify-between">
+                    <span>Arsip Alur Cerita Teyvat</span>
+                    <Scroll size={12} />
                   </div>
+
                   <Link
-                    href="/kategori/archon-quest"
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
+                    href="/katalog"
+                    onClick={() => setStoryDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gold-300 bg-gold-400/10 hover:bg-gold-400/20 transition-colors mb-1"
                   >
-                    <Scroll size={14} className="text-gold-300" />
+                    <BookOpen size={14} className="text-gold-300" />
                     <div>
-                      <p className="font-semibold text-parchment">Archon Quest</p>
-                      <p className="text-[10px] text-parchment-muted">Kisah 7 Bangsa & Takdir Dunia</p>
+                      <p className="font-bold text-gold-200">Semua Cerita &amp; Quest</p>
+                      <p className="text-[10px] text-parchment-muted">Katalog lengkap babak cerita</p>
                     </div>
                   </Link>
+
+                  <Link
+                    href="/kategori/archon-quest"
+                    onClick={() => setStoryDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
+                  >
+                    <Scroll size={14} className="text-cyan-300" />
+                    <div>
+                      <p className="font-semibold text-parchment">Archon Quest</p>
+                      <p className="text-[10px] text-parchment-muted">Kisah 7 Bangsa &amp; Pengelana</p>
+                    </div>
+                  </Link>
+
                   <Link
                     href="/kategori/story-quest"
-                    onClick={() => setDropdownOpen(false)}
+                    onClick={() => setStoryDropdownOpen(false)}
                     className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
                   >
                     <Shield size={14} className="text-emerald-300" />
                     <div>
                       <p className="font-semibold text-parchment">Story Quest</p>
-                      <p className="text-[10px] text-parchment-muted">Kisah Personal Tokoh Utama</p>
+                      <p className="text-[10px] text-parchment-muted">Babak Petualangan Legenda</p>
                     </div>
                   </Link>
-                  <Link
-                    href="/kategori/character-backstory"
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
-                  >
-                    <Sparkles size={14} className="text-anemo" />
-                    <div>
-                      <p className="font-semibold text-parchment">Character Backstory</p>
-                      <p className="text-[10px] text-parchment-muted">Biografi & Rahasia Vision</p>
-                    </div>
-                  </Link>
+
                   <Link
                     href="/kategori/world-lore"
-                    onClick={() => setDropdownOpen(false)}
+                    onClick={() => setStoryDropdownOpen(false)}
                     className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
                   >
                     <Compass size={14} className="text-purple-300" />
                     <div>
                       <p className="font-semibold text-parchment">World Lore</p>
-                      <p className="text-[10px] text-parchment-muted">Khaenri&apos;ah & Reruntuhan Kuno</p>
+                      <p className="text-[10px] text-parchment-muted">Khaenri&apos;ah &amp; Sejarah Kuno</p>
                     </div>
                   </Link>
-
-                  <div className="pt-2 mt-1 border-t border-gold-300/10">
-                    <Link
-                      href="/katalog"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-gold-300 hover:bg-gold-400/10 hover:text-gold-200 transition-colors"
-                    >
-                      <span className="flex items-center gap-2">
-                        <BookOpen size={14} />
-                        Semua Katalog (60+)
-                      </span>
-                      <span>→</span>
-                    </Link>
-                  </div>
                 </div>
               )}
             </div>
 
-            {/* Komunitas */}
+            {/* 3. Dropdown Karakter & Database (Pusat Khusus Karakter) */}
+            <div className="relative" ref={charDropdownRef}>
+              <button
+                onClick={() => {
+                  setCharDropdownOpen(!charDropdownOpen);
+                  setStoryDropdownOpen(false);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide group"
+              >
+                <Database size={14} className="text-anemo group-hover:scale-110 transition-transform" />
+                <span>Karakter &amp; Data</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-gold-400/20 text-gold-300 border border-gold-400/40">
+                  126
+                </span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ${
+                    charDropdownOpen ? "rotate-180 text-gold-300" : ""
+                  }`}
+                />
+              </button>
+
+              {charDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-celestia-900 border border-gold-300/25 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in backdrop-blur-xl">
+                  <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-gold-300 font-bold border-b border-gold-300/10 mb-1 flex items-center justify-between">
+                    <span>Ensiklopedia Karakter</span>
+                    <Sparkles size={12} />
+                  </div>
+
+                  <Link
+                    href="/database"
+                    onClick={() => setCharDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
+                  >
+                    <Database size={14} className="text-anemo" />
+                    <div>
+                      <p className="font-semibold text-parchment">Database 126 Karakter</p>
+                      <p className="text-[10px] text-parchment-muted">Roster 5★ &amp; 4★, Senjata, Item</p>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/kategori/character-backstory"
+                    onClick={() => setCharDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
+                  >
+                    <UserCheck size={14} className="text-gold-300" />
+                    <div>
+                      <p className="font-semibold text-parchment">Biografi &amp; Backstory</p>
+                      <p className="text-[10px] text-parchment-muted">Kisah profil Character Story 1–5</p>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/kategori/character-backstory"
+                    onClick={() => setCharDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-parchment-dim hover:text-gold-200 hover:bg-celestia-800 transition-colors"
+                  >
+                    <Headphones size={14} className="text-emerald-300" />
+                    <div>
+                      <p className="font-semibold text-parchment">Audio Suara Jepang (JP)</p>
+                      <p className="text-[10px] text-parchment-muted">Rekaman suara resmi Seiyuu</p>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Komunitas */}
             <Link
               href="/community"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide"
@@ -181,7 +250,7 @@ export default function Navbar() {
               <span>Komunitas</span>
             </Link>
 
-            {/* Tentang */}
+            {/* 5. Tentang */}
             <Link
               href="/tentang"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-parchment-dim hover:text-gold-200 hover:bg-celestia-800/80 transition-all text-xs font-semibold tracking-wide"
@@ -192,73 +261,70 @@ export default function Navbar() {
           </nav>
 
           {/* ── Desktop Actions: Donate & Buat Lore ── */}
-          <div className="hidden md:flex items-center gap-3">
-            <a
-              href={donationUrl || "#"}
+          <div className="hidden lg:flex items-center gap-3">
+            <button
               onClick={handleDonateClick}
-              target={donationUrl && donationUrl !== "#" ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition-all text-xs font-bold shadow-sm hover:scale-105 active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 text-xs font-semibold transition-all hover:scale-105 active:scale-95 shadow-sm"
               title="Dukung pemeliharaan website Teyvat Lore"
             >
-              <Heart size={14} className="text-rose-400 fill-rose-400/30 animate-pulse" />
+              <Heart size={14} className="text-rose-400 fill-rose-400/30" />
               <span>Donasi</span>
-            </a>
+            </button>
 
             <Link
               href="/buat-lore"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 hover:from-gold-400 hover:to-gold-300 text-celestia-950 font-bold transition-all text-xs shadow-md shadow-gold-400/20 hover:scale-105 active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 hover:from-gold-400 hover:to-gold-300 text-celestia-950 font-bold text-xs transition-all hover:scale-105 active:scale-95 shadow-md shadow-gold-400/20"
             >
-              <PlusCircle size={15} />
+              <PlusCircle size={14} />
               <span>+ Buat Lore</span>
             </Link>
           </div>
 
           {/* ── Mobile Hamburger Button ── */}
           <button
-            className="lg:hidden text-parchment-dim hover:text-gold-300 transition-colors p-2 rounded-xl hover:bg-celestia-800"
             onClick={() => setOpen(!open)}
-            aria-label="Buka Menu Navigasi"
+            className="lg:hidden p-2 text-parchment-dim hover:text-gold-300 rounded-lg hover:bg-celestia-800 transition-colors"
+            aria-label="Toggle navigation menu"
           >
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
-        {/* ── Mobile Navigation Drawer ── */}
+        {/* ── Mobile Drawer (Terpisah Rapi: Cerita vs Karakter) ── */}
         {open && (
-          <div className="lg:hidden border-t border-gold-300/15 bg-celestia-900/98 px-4 py-5 flex flex-col gap-3 shadow-2xl backdrop-blur-xl animate-fade-in">
-            <div className="grid grid-cols-2 gap-2 mb-2">
-              <Link
-                href="/"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 p-3 rounded-xl bg-celestia-950 border border-gold-300/10 text-xs font-semibold text-parchment hover:text-gold-200"
-              >
-                <Home size={15} className="text-gold-300" />
-                <span>Beranda</span>
-              </Link>
-              <Link
-                href="/database"
-                onClick={() => setOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl bg-celestia-950 border border-gold-300/10 text-xs font-semibold text-parchment hover:text-gold-200"
-              >
-                <div className="flex items-center gap-2">
-                  <Database size={15} className="text-anemo" />
-                  <span>Database</span>
-                </div>
-                <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-gold-400/20 text-gold-300 border border-gold-400/30">
-                  126
-                </span>
-              </Link>
-            </div>
+          <div className="lg:hidden border-t border-gold-300/15 bg-celestia-900/98 px-4 pt-4 pb-6 space-y-4 animate-fade-in shadow-2xl backdrop-blur-xl">
+            {/* Beranda */}
+            <Link
+              href="/"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-celestia-950 border border-gold-300/10 text-xs font-semibold text-parchment hover:text-gold-200"
+            >
+              <Home size={16} className="text-gold-300" />
+              <span>Beranda</span>
+            </Link>
 
-            <div className="p-3 bg-celestia-950/70 border border-gold-300/10 rounded-xl space-y-2">
-              <p className="text-[10px] uppercase font-bold text-gold-300 tracking-wider">Kategori Cerita</p>
+            {/* Block 1: Cerita & Quest */}
+            <div className="p-3 bg-celestia-950/70 border border-gold-300/15 rounded-xl space-y-2">
+              <div className="flex items-center justify-between pb-1 border-b border-gold-300/10">
+                <p className="text-[10px] uppercase font-bold text-gold-300 tracking-wider flex items-center gap-1.5">
+                  <Scroll size={13} />
+                  Alur Cerita &amp; Quest
+                </p>
+                <Link
+                  href="/katalog"
+                  onClick={() => setOpen(false)}
+                  className="text-[10px] text-gold-300 hover:underline font-bold"
+                >
+                  Buka Katalog →
+                </Link>
+              </div>
+
               <Link
                 href="/kategori/archon-quest"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 text-xs text-parchment-dim hover:text-gold-200 py-1"
               >
-                <Scroll size={14} className="text-gold-300" />
+                <Scroll size={14} className="text-cyan-300" />
                 <span>Archon Quest (7 Bangsa)</span>
               </Link>
               <Link
@@ -270,31 +336,63 @@ export default function Navbar() {
                 <span>Story Quest Karakter</span>
               </Link>
               <Link
-                href="/kategori/character-backstory"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 text-xs text-parchment-dim hover:text-gold-200 py-1"
-              >
-                <Sparkles size={14} className="text-anemo" />
-                <span>Character Backstory</span>
-              </Link>
-              <Link
                 href="/kategori/world-lore"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 text-xs text-parchment-dim hover:text-gold-200 py-1"
               >
                 <Compass size={14} className="text-purple-300" />
-                <span>World Lore & Rahasia Dunia</span>
-              </Link>
-              <Link
-                href="/katalog"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 text-xs font-bold text-gold-300 hover:text-gold-200 pt-1 border-t border-gold-300/10"
-              >
-                <BookOpen size={14} />
-                <span>Semua Katalog Cerita (60+) →</span>
+                <span>World Lore &amp; Rahasia Dunia</span>
               </Link>
             </div>
 
+            {/* Block 2: Karakter & Database */}
+            <div className="p-3 bg-celestia-950/70 border border-gold-300/15 rounded-xl space-y-2">
+              <div className="flex items-center justify-between pb-1 border-b border-gold-300/10">
+                <p className="text-[10px] uppercase font-bold text-gold-300 tracking-wider flex items-center gap-1.5">
+                  <Database size={13} />
+                  Karakter &amp; Database
+                </p>
+                <span className="text-[9px] font-bold text-gold-300 px-1.5 py-0.2 rounded-full bg-gold-400/20 border border-gold-400/40">
+                  126 Char
+                </span>
+              </div>
+
+              <Link
+                href="/database"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-between text-xs text-parchment-dim hover:text-gold-200 py-1"
+              >
+                <div className="flex items-center gap-2">
+                  <Database size={14} className="text-anemo" />
+                  <span>Database 126 Karakter &amp; Senjata</span>
+                </div>
+                <span>→</span>
+              </Link>
+              <Link
+                href="/kategori/character-backstory"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-between text-xs text-parchment-dim hover:text-gold-200 py-1"
+              >
+                <div className="flex items-center gap-2">
+                  <UserCheck size={14} className="text-gold-300" />
+                  <span>Biografi &amp; Kisah Masa Lalu</span>
+                </div>
+                <span>→</span>
+              </Link>
+              <Link
+                href="/kategori/character-backstory"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-between text-xs text-parchment-dim hover:text-gold-200 py-1"
+              >
+                <div className="flex items-center gap-2">
+                  <Headphones size={14} className="text-emerald-300" />
+                  <span>Audio Suara Karakter (JP)</span>
+                </div>
+                <span>→</span>
+              </Link>
+            </div>
+
+            {/* Komunitas & Tentang */}
             <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/community"
@@ -314,20 +412,18 @@ export default function Navbar() {
               </Link>
             </div>
 
+            {/* Actions: Donasi & Buat Lore */}
             <div className="pt-3 border-t border-gold-300/10 flex flex-col gap-2">
-              <a
-                href={donationUrl || "#"}
+              <button
                 onClick={(e) => {
                   setOpen(false);
                   handleDonateClick(e);
                 }}
-                target={donationUrl && donationUrl !== "#" ? "_blank" : undefined}
-                rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-xs transition-all shadow-sm"
               >
                 <Heart size={15} className="text-rose-400 fill-rose-400/30" />
-                <span>☕ Donasi / Dukung Kami</span>
-              </a>
+                <span>☕ Donasi / Dukung Server</span>
+              </button>
 
               <Link
                 href="/buat-lore"
@@ -361,17 +457,20 @@ export default function Navbar() {
             >
               Dukung Teyvat Lore
             </h3>
-            <p className="text-parchment-dim text-sm leading-relaxed mb-6">
-              Terima kasih yang sebesar-besarnya atas niat baik dan apresiasi Anda! Tautan donasi resmi (Saweria / Trakteer / QRIS) sedang disiapkan oleh pengelola website.
+            <p className="text-xs text-parchment-dim leading-relaxed mb-6">
+              Teyvat Lore adalah proyek arsip komunitas gratis tanpa iklan. Dukungan Anda membantu kami membiayai server, CDN, dan riset naskah lore Genshin Impact dalam bahasa Indonesia.
             </p>
-            <div className="p-3 bg-celestia-800/80 rounded-xl border border-gold-300/15 mb-6 text-xs text-gold-300/80">
-              ✨ Setiap dukungan Anda sangat berarti untuk membiayai pemeliharaan arsip naskah, audio, dan pengembangan fitur baru.
+            <div className="p-4 rounded-xl bg-celestia-950 border border-gold-300/20 mb-6 text-xs text-parchment space-y-2">
+              <p className="text-gold-300 font-semibold">Tautan Donasi Resmi:</p>
+              <p className="text-parchment-dim break-all">
+                Saweria / Trakteer / KaryaKarsa dapat diatur melalui variabel lingkungan <code className="text-gold-200">NEXT_PUBLIC_DONATION_URL</code> di file <code className="text-gold-200">.env.local</code>.
+              </p>
             </div>
             <button
               onClick={() => setShowDonateModal(false)}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-300 text-celestia-950 font-bold text-sm hover:from-gold-400 hover:to-gold-200 transition-all shadow-md"
+              className="w-full py-2.5 rounded-xl bg-gold-400 hover:bg-gold-300 text-celestia-950 font-bold text-xs transition-colors"
             >
-              Tutup & Lanjutkan Membaca
+              Tutup
             </button>
           </div>
         </div>

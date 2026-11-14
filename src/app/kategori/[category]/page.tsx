@@ -84,7 +84,11 @@ export default async function CategoryPage({ params }: Props) {
       </div>
 
       {/* Catalog */}
-      <StoryCatalog stories={filtered} />
+      <StoryCatalog
+        stories={filtered}
+        hideTabs={true}
+        defaultTab={category === "character-backstory" ? "characters" : "stories"}
+      />
     </div>
   );
 }

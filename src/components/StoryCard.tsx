@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Headphones, BookOpen, Pause, Volume2 } from "lucide-react";
+import { Clock, Headphones, BookOpen, Pause, Volume2, Scroll, Compass } from "lucide-react";
 import type { StoryMeta } from "@/types/story";
 import ElementBadge from "./ElementBadge";
 import { useAudio } from "@/context/AudioContext";
@@ -10,7 +10,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   "archon-quest": "Archon Quest",
   "story-quest": "Story Quest",
   "world-lore": "World Lore",
-  "character-backstory": "Backstory",
+  "character-backstory": "Biografi Karakter",
 };
 
 export default function StoryCard({ story }: { story: StoryMeta }) {
@@ -48,9 +48,11 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
     }
   };
 
+  const isCharacterStory = story.category === "character-backstory";
+
   return (
     <article className="primogem-corner group relative flex flex-col bg-scroll-800 border border-gold-300/15 rounded-xl overflow-hidden hover:border-gold-300/40 transition-all duration-300 hover:glow-gold">
-      {/* ── Character Photo / Card Cover ── */}
+      {/* ── Visual Header: Karakter Photo vs. Quest Chronicle Header ── */}
       {story.coverImage ? (
         <div className="relative w-full aspect-[16/10] overflow-hidden bg-celestia-950/90 border-b border-gold-300/15">
           <img
@@ -89,43 +91,35 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
           )}
         </div>
       ) : (
-        /* Fallback Top accent line colored by element */
-        <div
-          className={`h-0.5 w-full ${
-            story.element && story.element !== "none"
-              ? `bg-${story.element === "anemo" ? "[#72E2C4]" : story.element === "geo" ? "[#E3B342]" : story.element === "electro" ? "[#C67BF2]" : story.element === "dendro" ? "[#8FD843]" : story.element === "hydro" ? "[#4CC2F8]" : story.element === "pyro" ? "[#EF7845]" : "[#9CE8FF]"}`
-              : "bg-gradient-to-r from-gold-500 via-gold-300 to-gold-500"
-          }`}
-          style={{
-            background:
-              story.element === "anemo" ? "#72E2C4" :
-              story.element === "geo" ? "#E3B342" :
-              story.element === "electro" ? "#C67BF2" :
-              story.element === "dendro" ? "#8FD843" :
-              story.element === "hydro" ? "#4CC2F8" :
-              story.element === "pyro" ? "#EF7845" :
-              story.element === "cryo" ? "#9CE8FF" :
-              "linear-gradient(to right, #B87A1E, #E5BA69, #B87A1E)",
-          }}
-        />
+        /* Quest Chronicle Decorative Header Banner (Untuk Archon Quest, Story Quest, World Lore) */
+        <div className="relative w-full h-24 overflow-hidden bg-gradient-to-br from-celestia-950 via-celestia-900 to-scroll-800 border-b border-gold-300/15 p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 z-10">
+            <div className="w-10 h-10 rounded-xl bg-gold-400/10 border border-gold-300/30 flex items-center justify-center text-gold-300 shadow-inner group-hover:scale-110 group-hover:border-gold-300 transition-transform">
+              {story.category === "archon-quest" ? (
+                <Scroll size={20} className="text-gold-300" />
+              ) : (
+                <Compass size={20} className="text-cyan-300" />
+              )}
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-gold-300/90 block">
+                {CATEGORY_LABEL[story.category] ?? story.category}
+              </span>
+              <span className="text-xs font-semibold text-parchment">
+                Wilayah {story.region}
+              </span>
+            </div>
+          </div>
+          <div className="text-gold-300/10 text-5xl font-display font-black select-none pointer-events-none pr-2">
+            ✦
+          </div>
+        </div>
       )}
 
       <div className="p-5 flex flex-col gap-3 flex-1">
-        {/* Category & Region */}
+        {/* Category & Region badges */}
         <div className="flex items-center gap-2 flex-wrap">
-          {!story.coverImage && story.rarity && (
-            <span
-              className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2 py-0.5 rounded border shadow-sm ${
-                story.rarity === 5
-                  ? "bg-amber-500/25 text-gold-300 border-gold-400/50"
-                  : "bg-purple-500/25 text-purple-300 border-purple-400/50"
-              }`}
-            >
-              <span>{story.rarity === 5 ? "★★★★★" : "★★★★"}</span>
-              <span>{story.rarity}★</span>
-            </span>
-          )}
-          <span className="text-xs text-parchment-muted bg-celestia-700 px-2.5 py-0.5 rounded-full border border-celestia-500">
+          <span className="text-xs text-parchment-muted bg-celestia-700/80 px-2.5 py-0.5 rounded-full border border-celestia-500">
             {CATEGORY_LABEL[story.category] ?? story.category}
           </span>
           <span className="text-xs text-parchment-muted">{story.region}</span>
@@ -136,24 +130,26 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
 
         {/* Title */}
         <h3
-          className="text-parchment font-semibold text-base leading-snug group-hover:text-gold-200 transition-colors"
+          className="text-parchment font-bold text-base leading-snug group-hover:text-gold-200 transition-colors"
           style={{ fontFamily: "Cinzel, Georgia, serif" }}
         >
           {story.title}
         </h3>
 
-        {/* Character */}
+        {/* Character (if present) */}
         {story.character && (
-          <p className="text-parchment-dim text-sm">{story.character}</p>
+          <p className="text-gold-300/80 text-xs font-semibold -mt-1">
+            Tokoh: <span className="text-parchment-dim">{story.character}</span>
+          </p>
         )}
 
         {/* Summary */}
-        <p className="text-parchment-muted text-sm leading-relaxed line-clamp-3 flex-1">
+        <p className="text-parchment-muted text-xs leading-relaxed line-clamp-3 flex-1">
           {story.summary}
         </p>
 
         {/* Meta: time & audio */}
-        <div className="flex items-center gap-3 text-parchment-muted text-xs">
+        <div className="flex items-center gap-3 text-parchment-muted text-xs pt-1">
           <span className="flex items-center gap-1">
             <Clock size={12} />
             {story.readingTime}
@@ -161,12 +157,12 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
           {story.audioUrl ? (
             <span className="flex items-center gap-1 text-emerald-300" title="Tersedia rekaman suara resmi karakter bahasa Jepang">
               <Volume2 size={12} />
-              Suara JP
+              Suara Karakter (JP)
             </span>
           ) : (
             <span className="flex items-center gap-1 text-anemo" title="Tersedia Mode Narator Suara AI">
               <Headphones size={12} />
-              Audio AI
+              Audio Narator AI
             </span>
           )}
         </div>
@@ -181,10 +177,10 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             className="flex-1 flex items-center justify-center gap-1.5 bg-gold-300/10 hover:bg-gold-300/20 border border-gold-300/30 hover:border-gold-300/60 text-gold-300 hover:text-gold-200 text-xs font-semibold py-2 px-3 rounded-lg transition-all"
           >
             <BookOpen size={13} />
-            Baca Naskah
+            <span>{isCharacterStory ? "Baca Biografi" : "Baca Kisah"}</span>
           </Link>
 
-          {/* Tombol Audio (Suara Karakter atau Narator AI) */}
+          {/* Tombol Audio */}
           <button
             onClick={handleAudioClick}
             className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all border ${
@@ -194,7 +190,7 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
                 ? "bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/30 hover:border-emerald-500/50 text-emerald-300 hover:text-emerald-200"
                 : "bg-celestia-700/80 hover:bg-celestia-600 border-gold-300/25 hover:border-gold-300/50 text-gold-300 hover:text-gold-200"
             }`}
-            title={story.audioUrl ? "Dengarkan suara resmi karakter" : "Dengarkan Narator AI Teyvat"}
+            title={story.audioUrl ? "Dengarkan suara resmi karakter (JP)" : "Dengarkan Narator AI Teyvat"}
           >
             {isThisPlaying ? (
               <>

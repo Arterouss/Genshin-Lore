@@ -1,13 +1,13 @@
 import { getAllStories } from "@/lib/stories";
 import StoryCatalog from "@/components/StoryCatalog";
 import Link from "next/link";
-import { ChevronLeft, Sparkles, BookOpen, Compass } from "lucide-react";
+import { ChevronLeft, Sparkles, BookOpen } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Katalog Seluruh Cerita & Arsip — Teyvat Lore",
+  title: "Katalog Cerita & Karakter — Teyvat Lore",
   description:
-    "Jelajahi seluruh kumpulan naskah Archon Quest, Story Quest, Backstory Karakter, dan World Lore Genshin Impact lengkap dengan audio suara Jepang dan narator AI.",
+    "Jelajahi kumpulan naskah Archon Quest, Story Quest, World Lore, serta biografi dan rekaman suara karakter Genshin Impact bahasa Jepang.",
 };
 
 export default function KatalogPage() {
@@ -25,7 +25,7 @@ export default function KatalogPage() {
       </Link>
 
       {/* Header */}
-      <header className="mb-10 text-center max-w-3xl mx-auto">
+      <header className="mb-6 text-center max-w-3xl mx-auto">
         <div className="flex items-center justify-center gap-2 mb-3">
           <div className="gold-divider w-12" />
           <span className="text-gold-300 text-xs tracking-widest uppercase font-semibold flex items-center gap-1.5">
@@ -42,17 +42,18 @@ export default function KatalogPage() {
             backgroundImage: "linear-gradient(135deg, #FFF1CE 0%, #E5BA69 50%, #C48E2E 100%)",
           }}
         >
-          Katalog Lengkap Cerita Teyvat
+          Katalog Arsip Cerita &amp; Karakter
         </h1>
 
         <p className="text-parchment-dim text-sm sm:text-base leading-relaxed">
-          Temukan seluruh naskah kisah, transkrip rekaman suara resmi karakter dalam bahasa Jepang,
-          kronik perang kuno, dan perjalanan Sang Pengelana melintasi ketujuh bangsa.
+          Arsip telah dipisahkan secara rapi: telusuri tab <strong className="text-gold-200">Alur Cerita &amp; Quest</strong> untuk
+          kronik perjalanan 7 bangsa, atau beralih ke tab <strong className="text-emerald-300">Biografi &amp; Suara Karakter JP</strong> untuk
+          mendengarkan rekaman suara resmi seiyuu dan membaca rahasia masa lalu tiap tokoh.
         </p>
       </header>
 
-      {/* Catalog Grid with Search and Multi-Filters */}
-      <StoryCatalog stories={stories} />
+      {/* Catalog Grid with Search and Separated Story/Character Tabs */}
+      <StoryCatalog stories={stories} defaultTab="stories" />
     </div>
   );
 }

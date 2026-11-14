@@ -152,7 +152,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2.5 bg-gradient-to-r from-gold-500 to-gold-300 hover:from-gold-400 hover:to-gold-200 text-celestia-900 font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-xl shadow-gold-500/10 group"
             >
               <Database size={18} className="group-hover:rotate-6 transition-transform" />
-              Buka Database 126 Karakter
+              Buka Database (126 Karakter)
             </Link>
 
             <Link
@@ -160,7 +160,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2.5 bg-celestia-800/90 hover:bg-celestia-700 text-gold-300 border border-gold-300/30 font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-lg group"
             >
               <BookOpen size={18} className="group-hover:scale-110 transition-transform" />
-              Jelajahi Katalog Cerita
+              Jelajahi Cerita &amp; Quest
             </Link>
           </div>
 
@@ -413,21 +413,30 @@ export default function HomePage() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-parchment mb-1">
-                Mencari biografi dan suara dari 126 karakter atau misteri bangsa lainnya?
+                Kisah Story &amp; Karakter Kini Terpisah Rapi
               </h3>
               <p className="text-xs text-parchment-dim">
-                Seluruh naskah Story Quest, biografi Character Story 1–5, dan World Lore telah diarsipkan rapi dengan fitur pencarian dan filter wilayah.
+                Anda dapat menjelajahi babak alur cerita quest tanpa tercampur kartu karakter, atau membuka biografi dan suara resmi Jepang para karakter di menu khusus karakter.
               </p>
             </div>
           </div>
 
-          <Link
-            href="/katalog"
-            className="shrink-0 inline-flex items-center gap-2.5 bg-gradient-to-r from-gold-500 to-gold-300 hover:from-gold-400 hover:to-gold-200 text-celestia-900 font-bold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 active:scale-95 shadow-md"
-          >
-            <BookOpen size={16} />
-            <span>Buka Seluruh Katalog Cerita →</span>
-          </Link>
+          <div className="shrink-0 flex flex-wrap items-center gap-3">
+            <Link
+              href="/katalog"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-300 hover:from-gold-400 hover:to-gold-200 text-celestia-900 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-md"
+            >
+              <BookOpen size={15} />
+              <span>Buka Cerita &amp; Quest →</span>
+            </Link>
+            <Link
+              href="/database"
+              className="inline-flex items-center gap-2 bg-celestia-800 hover:bg-celestia-750 text-gold-300 border border-gold-300/30 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-md"
+            >
+              <Database size={15} />
+              <span>Database Karakter →</span>
+            </Link>
+          </div>
         </div>
       </section>
 
