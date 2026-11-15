@@ -5,7 +5,7 @@ export interface CharacterInfo {
   name: string;
   title: string;
   rarity: 4 | 5;
-  element: "pyro" | "hydro" | "anemo" | "electro" | "dendro" | "cryo" | "geo";
+  element: "pyro" | "hydro" | "anemo" | "electro" | "dendro" | "cryo" | "geo" | "none";
   weapon: WeaponType;
   region: string;
   affiliation: string;
@@ -13,6 +13,7 @@ export interface CharacterInfo {
   birthday: string;
   summary: string;
   loreDescription: string;
+  iconUrl?: string;
 }
 
 export interface WeaponInfo {
@@ -29,24 +30,50 @@ export interface WeaponInfo {
   iconUrl?: string;
 }
 
-export interface MaterialInfo {
+export interface FoodIngredient {
+  name: string;
+  count: number;
+  iconUrl?: string;
+}
+
+export interface FoodInfo {
   id: string;
   name: string;
-  category: "ascension" | "talent" | "specialty" | "food";
+  nameEn: string;
   rarity: 1 | 2 | 3 | 4 | 5;
-  region: string;
-  source: string;
-  effect?: string;
+  category: "attack" | "defense" | "recovery" | "adventure" | "other" | string;
+  categoryLabel: string;
+  effect: string;
   description: string;
+  ingredients: FoodIngredient[];
+  suspicious?: string;
+  delicious?: string;
+  iconUrl: string;
 }
 
 export interface WorldItemInfo {
   id: string;
   name: string;
-  type: "oculus" | "chest" | "key" | "puzzle" | "monument";
+  nameEn: string;
+  subCategory: string;
   region: string;
+  rarity: 1 | 2 | 3 | 4 | 5;
+  typeText: string;
   description: string;
-  locationLore: string;
+  sources: string[];
+  iconUrl?: string;
+}
+
+export interface MaterialInfo {
+  id: string;
+  name: string;
+  nameEn: string;
+  subCategory: string;
+  rarity: 1 | 2 | 3 | 4 | 5;
+  typeText: string;
+  description: string;
+  sources: string[];
+  iconUrl?: string;
 }
 
 export interface QuestItemInfo {
@@ -57,4 +84,5 @@ export interface QuestItemInfo {
   origin: string;
   description: string;
   historicalSignificance: string;
+  iconUrl?: string;
 }

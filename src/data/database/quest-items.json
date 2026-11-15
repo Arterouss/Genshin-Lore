@@ -1,56 +1,102 @@
 [
   {
-    "id": "holy-lyre-der-himmel",
-    "name": "Holy Lyre der Himmel",
-    "questName": "Prologue: The Outlander Who Caught the Wind",
-    "chapter": "Archon Quest Mondstadt Babak II & III",
-    "origin": "Katedral Favonius / Barbatos",
-    "description": "Kecapi suci bertabur ukiran bulu angin yang pernah dipetik oleh Archon Barbatos untuk memanggil naga Dvalin ribuan tahun silam.",
-    "historicalSignificance": "Instrumen ini dipinjam (dan dicuri secara rahasia oleh Fatui) untuk memulihkan kewarasan Dvalin dari racun korupsi Abyss Order."
+    "id": "quest-1",
+    "name": "Aranyaka: Buku Catatan Hutan Vanarana",
+    "questName": "Rangkaian Quest Aranyaka",
+    "chapter": "Sumeru Chapter III",
+    "origin": "Dunia Impian Vanarana",
+    "description": "Buku catatan ajaib yang diberikan oleh Arama. Mencatat melodi-melodi lagu kuno bangsa Aranara, kisah Biji Shriveled, serta rahasia pembersihan Marana (Zona Withering) di seluruh hutan Sumeru.",
+    "historicalSignificance": "Menghubungkan manusia dengan bangsa roh tanaman pelindung pohon Irminsul warisan Penguasa Terdahulu Rukkhadevata.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_101736.png"
   },
   {
-    "id": "aranyaka-book",
-    "name": "Aranyaka (Buku Cerita Hutan)",
-    "questName": "Aranyaka World Quest Series",
-    "chapter": "Sumeru Dharma Forest Lore",
-    "origin": "Diberikan oleh kaum Aranara di Vanarana",
-    "description": "Buku catatan tebal bertuliskan bahasa kuno kaum peri hutan Aranara yang mencatat kenangan Nara Varuna (saudara kembar Pengelana).",
-    "historicalSignificance": "Merupakan kunci untuk membersihkan zona Marana (Withering) dan membangkitkan kembali Festival Utsava di jantung hutan Sumeru."
-  },
-  {
-    "id": "ancient-deshret-slate",
-    "name": "Scarlet Sand Slate",
+    "id": "quest-2",
+    "name": "Lempengan Batu Merah Scarlet Sand Slate",
     "questName": "Golden Slumber & Old Notes",
-    "chapter": "Gurun Pasir Sumeru / Makam King Deshret",
-    "origin": "Peradaban Kuno Al-Ahmar (King Deshret)",
-    "description": "Lempengan batu bercahaya misterius yang dapat beresonansi dengan teknologi piramida kuno King Deshret.",
-    "historicalSignificance": "Membuka otoritas lift, gerbang rahasia, dan pintu makam Al-Ahmar, mengungkap kebenaran di balik persahabatan tragis Rukkhadevata, King Deshret, dan Nabu Malikata (Goddess of Flowers)."
+    "chapter": "Gurun Pasir Hypostyle",
+    "origin": "Makam Agung Raja Deshret",
+    "description": "Lempengan berteknologi purba yang memancarkan cahaya merah tembaga. Berfungsi sebagai kunci izin akses (Clearance) untuk membuka pintu-pintu rahasia di dalam makam Al-Ahmar.",
+    "historicalSignificance": "Bukti kecerdasan komputasi dan arsitektur peradaban Raja Deshret sebelum musnah akibat Forbidden Knowledge.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_101738.png"
   },
   {
-    "id": "narzissenkreuz-blade",
-    "name": "Sword of Narzissenkreuz",
-    "questName": "In the Wake of Narcissus",
-    "chapter": "Fontaine Narzissenkreuz Ordo Series",
-    "origin": "Ditempa di Laut Purba Primordial Sea",
-    "description": "Pedang suci yang ditempa dari kehendak murni Rene, Jakob, Mary-Ann, dan Ann untuk memotong benang takdir kiamat Fontaine.",
-    "historicalSignificance": "Senjata ini memiliki kemampuan unik untuk beralih antara energi Arkhe Pneuma dan Ousia secara bebas, lambang transendensi kehendak manusia atas nubuatan surga."
+    "id": "quest-3",
+    "name": "Fragmen Kunci Reruntuhan Enkanomiya",
+    "questName": "Dari Senja Hingga Fajar di Byakuyakoku",
+    "chapter": "Kepulauan Watatsumi",
+    "origin": "Dainichi Mikoshi",
+    "description": "Kunci kuno bercahaya dingin yang memanipulasi pergantian Whitenight dan Evernight di kedalaman laut Enkanomiya.",
+    "historicalSignificance": "Peninggalan bangsa manusia zaman Primordial One sebelum langit Teyvat ditutup oleh Celestia.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_100918.png"
   },
   {
-    "id": "delusion-of-the-tsaritsa",
-    "name": "Delusion Fatui (Mata Tiruan Kuno)",
-    "questName": "Chapter VI: Everwinter Without Mercy",
-    "chapter": "Snezhnaya & Fatui Military Lore",
-    "origin": "Diproduksi di Pabrik Rahasia Dottore, Snezhnaya",
-    "description": "Artefak buatan bermata elemen palsu yang memanfaatkan sisa-sisa dendam dewa purba gugur untuk menganugerahkan daya hancur luar biasa kepada penggunanya.",
-    "historicalSignificance": "Senjata andalan para perwira Fatui dan Eleven Harbingers. Menunjukkan penolakan mutlak Snezhnaya terhadap anugerah Vision surgawi Celestia dan tekad manusia untuk melawan takdir para dewa."
+    "id": "quest-4",
+    "name": "Jam Mekanis Kuno Fontaine (Clockwork Core)",
+    "questName": "Jejak Langkah Fontaine",
+    "chapter": "Fontaine Chapter IV",
+    "origin": "Institut Riset Fontaine",
+    "description": "Inti mekanisme energi Arkhium yang dikembangkan oleh Alain Guillotin untuk menggerakkan mesin Clockwork Meka tanpa memerlukan Vision.",
+    "historicalSignificance": "Fondasi revolusi industri Fontaine serta dasar perakitan robot kecerdasan buatan Seymour.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_101980.png"
   },
   {
-    "id": "cryo-gnosis-vessel",
-    "name": "Cryo Gnosis (Tahta Es Terakhir)",
-    "questName": "The Grand Finale of the Seven Gnosis",
-    "chapter": "Zapolyarny Palace, Snezhnaya",
-    "origin": "Tahta Ilahi Celestia / Sang Tsaritsa",
-    "description": "Instrumen surgawi berbentuk bidak catur yang terbuat dari jasad Descender Ketiga dan memegang otoritas absolut elemen Cryo Teyvat.",
-    "historicalSignificance": "Merupakan bidak catur penutup yang disatukan oleh Sang Tsaritsa bersama 6 Gnosis lainnya di Istana Zapolyarny untuk memicu perang pembalasan melawan Heavenly Principles."
+    "id": "quest-5",
+    "name": "Fragmen Gnosis Cryo Tiruan",
+    "questName": "Misi Rahasia Zapolyarny",
+    "chapter": "Snezhnaya Chapter VI (Riset)",
+    "origin": "Laboratorium Dottore, Zapolyarny Palace",
+    "description": "Pecahan prototipe wadah elemen ilahi yang diteliti oleh Il Dottore untuk memahami bagaimana Tsaritsa mengumpulkan ketujuh Gnosis milik para Archon.",
+    "historicalSignificance": "Kunci pemahaman bagaimana tahta Celestia dan Prinsip-Prinsip Surgawi (Heavenly Principles) dapat diguncang oleh Fatui.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_100919.png"
+  },
+  {
+    "id": "quest-6",
+    "name": "Lensa Kenangan (Memento Lens)",
+    "questName": "Pembersihan Sakura Suci (Sacred Sakura Cleansing)",
+    "chapter": "Inazuma Chapter II",
+    "origin": "Kuil Agung Narukami",
+    "description": "Lensa misterius peninggalan Kitsune Saiguu. Melalui lensa ini, pengelana dapat melihat bayangan roh masa lalu dan rekaman memori yang tertinggal pada patung Kitsune kecil.",
+    "historicalSignificance": "Menyimpan serpihan kenangan bencana Cataclysm 500 tahun lalu di Inazuma saat monster jurang Abyss menyerbu Pulau Narukami.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_220037.png"
+  },
+  {
+    "id": "quest-7",
+    "name": "Bulu Burung Kanza (Pecahan Kamboja Ruu)",
+    "questName": "Melodi Kabut Abadi Tsurumi",
+    "chapter": "Pulau Tsurumi",
+    "origin": "Pohon Thunderbird Kanna",
+    "description": "Bulu yang bersinar lembut peninggalan burung Thunderbird Kapatcir. Mengingatkan janji anak manusia bernama Ruu yang bersenandung diiringi kecapi.",
+    "historicalSignificance": "Bukti tragedi salah paham antara pemujaan manusia purba dengan dewa binatang liar yang berujung pada kutukan kabut abadi.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_100984.png"
+  },
+  {
+    "id": "quest-8",
+    "name": "Jimat Adjuvant Batu Lumen (Lumenstone Adjuvant)",
+    "questName": "Perjalanan Menuju Jurang Kegelapan Chasm",
+    "chapter": "Liyue The Chasm Underground",
+    "origin": "Paku Langit (Celestial Nail) Bawah Tanah",
+    "description": "Kristal penolak kegelapan yang menyerap energi lumpur hitam Ooze di dasar terdalam The Chasm. Memancarkan cahaya biru murni yang menenangkan jiwa yang terkutuk.",
+    "historicalSignificance": "Pecahan dari paku langit Celestia yang dijatuhkan ribuan tahun lalu untuk menyegel kebusukan jurang maut.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_220046.png"
+  },
+  {
+    "id": "quest-9",
+    "name": "Segel Perjanjian Bangsa Malam (Night Warden Obsidian)",
+    "questName": "Doa di Bawah Naungan Gunung Berapi Natlan",
+    "chapter": "Natlan Chapter V",
+    "origin": "Alam Roh Bangsa Malam (Night Kingdom)",
+    "description": "Cincin batu obsidian yang beresonansi dengan api Phlogiston. Membuka jalan rahasia ke ruang persembunyian para pahlawan kuno Natlan.",
+    "historicalSignificance": "Warisan Enam Suku Besar Natlan untuk mempertahankan Perjanjian Jiwa bersama Sang Penguasa Malam.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_101981.png"
+  },
+  {
+    "id": "quest-10",
+    "name": "Buku Dongeng 'Keluarga Babi Hutan' (Boar Princess)",
+    "questName": "Koleksi Arsip Perpustakaan Favonius",
+    "chapter": "Mondstadt",
+    "origin": "Hutan Wolvendom",
+    "description": "Buku dongeng anak-anak yang tampak sederhana, namun di balik kiasannya menceritakan kisah kutukan serigala purba dan pengorbanan di padang salju zaman Raja Badai Decarabian.",
+    "historicalSignificance": "Salah satu contoh bagaimana sejarah terlarang disamarkan menjadi cerita rakyat oleh sejarawan masa lampau agar lolos dari sensor Irminsul.",
+    "iconUrl": "https://enka.network/ui/UI_ItemIcon_100411.png"
   }
 ]
