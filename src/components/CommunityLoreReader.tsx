@@ -26,7 +26,7 @@ interface CommunityLoreReaderProps {
 }
 
 // Helper untuk format markdown teks lore menjadi HTML yang rapi & estetik
-function renderFormattedContent(content: string) {
+export function renderFormattedContent(content: string) {
   // Pecah per baris / blok
   const lines = content.split("\n");
   const elements: React.ReactNode[] = [];

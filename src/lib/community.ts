@@ -2,7 +2,6 @@ import {
   collection,
   addDoc,
   getDocs,
-  getDoc,
   doc,
   updateDoc,
   deleteDoc,
@@ -18,6 +17,63 @@ import communityTheories from "@/data/community-theories.json";
 
 const COLLECTION_NAME = "community_lore";
 const LOCAL_STORAGE_KEY = "teyvat_lore_community_posts";
+
+// Flag cerdas: jika koneksi Firestore/Storage terbukti offline / ditolak izinnya,
+// langsung alihkan semua operasi berikutnya ke LocalStorage tanpa jeda waktu (0ms delay).
+let firebaseKnownBroken = false;
+
+// Helper: membungkus promise dengan batas waktu timeout agar UI tidak pernah freeze/hang
+export function withTimeout<T>(promise: Promise<T>, ms = 2500): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Operasi Firebase melampaui batas waktu (${ms}ms)`)), ms)
+    ),
+  ]);
+}
+
+// Helper: Kompresi gambar ke format JPEG Data URL ringkas (~50-100KB)
+// Menjamin gambar muat disimpan di localStorage tanpa melebihi kuota 5MB browser
+export function compressImageToDataUrl(file: File, maxWidth = 1000, quality = 0.75): Promise<string> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve("");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(reader.result as string);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        } catch {
+          resolve(reader.result as string);
+        }
+      };
+      img.onerror = () => resolve(reader.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve("");
+    reader.readAsDataURL(file);
+  });
+}
 
 // 8 Teori Besar Komunitas Global (Tab 2)
 export const GLOBAL_COMMUNITY_THEORIES: CommunityLore[] = communityTheories.map((t, idx) => ({
@@ -98,8 +154,8 @@ export const ALL_COMMUNITY_LORES: CommunityLore[] = [
   ...INITIAL_USER_LORES,
 ];
 
-// Helper: ambil data lokal karya pengguna (Tab 1)
-function getLocalUserPosts(): CommunityLore[] {
+// Helper: ambil data karya pengguna dari localStorage
+export function getLocalUserPosts(): CommunityLore[] {
   if (typeof window === "undefined") return INITIAL_USER_LORES;
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -107,13 +163,15 @@ function getLocalUserPosts(): CommunityLore[] {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(INITIAL_USER_LORES));
       return INITIAL_USER_LORES;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_USER_LORES;
   } catch {
     return INITIAL_USER_LORES;
   }
 }
 
-function saveLocalUserPosts(posts: CommunityLore[]) {
+// Helper: simpan data karya pengguna ke localStorage
+export function saveLocalUserPosts(posts: CommunityLore[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
@@ -132,76 +190,109 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-// 1. Submit Postingan Baru Pengguna (status: "pending")
+// 1. Submit Postingan Baru Pengguna (Langsung diterbitkan dengan status: "approved")
 export async function createCommunityLore(
   data: Omit<CommunityLore, "id" | "likesCount" | "status" | "createdAt">
-): Promise<string> {
+): Promise<{ id: string; slug: string }> {
+  const generatedSlug = `${slugify(data.title)}-${Math.random().toString(36).substring(2, 6)}`;
   const newLore: CommunityLore = {
     ...data,
-    slug: `${slugify(data.title)}-${Math.random().toString(36).substring(2, 6)}`,
+    slug: generatedSlug,
     likesCount: 0,
-    status: "pending",
+    status: "approved", // Langsung aktif agar langsung terlihat oleh pengelana!
     createdAt: Date.now(),
   };
 
-  if (isFirebaseConfigured() && db) {
-    try {
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), newLore);
-      newLore.id = docRef.id;
-      return docRef.id;
-    } catch (err) {
-      console.warn("Firestore write error, menyimpan ke cache lokal:", err);
-    }
-  }
-
+  // Prioritas 1: Simpan ke LocalStorage secara instan (0ms delay)
+  // Menjamin naskah pengguna 100% aman dan tidak pernah hilang
   newLore.id = `local-${Date.now()}`;
   const existing = getLocalUserPosts();
   saveLocalUserPosts([newLore, ...existing]);
-  return newLore.id;
+
+  // Prioritas 2: Coba sinkronisasi ke Firebase Firestore jika tersedia
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db) {
+    try {
+      const docRef = await withTimeout(
+        addDoc(collection(db, COLLECTION_NAME), {
+          ...newLore,
+          id: undefined, // biarkan firestore generate id sendiri
+        }),
+        2500
+      );
+      if (docRef?.id) {
+        newLore.id = docRef.id;
+        // perbarui ID di local storage
+        const currentList = getLocalUserPosts();
+        const updatedList = currentList.map((item) =>
+          item.slug === generatedSlug ? { ...item, id: docRef.id } : item
+        );
+        saveLocalUserPosts(updatedList);
+      }
+    } catch (err) {
+      console.warn("Firestore write gagal/timeout, data tersimpan aman di local storage:", err);
+      firebaseKnownBroken = true;
+    }
+  }
+
+  return { id: newLore.id, slug: newLore.slug };
 }
 
 // 2. Ambil Postingan Pengguna yang Sudah Diapprove (Untuk Tab 1)
 export async function getApprovedLores(): Promise<CommunityLore[]> {
-  if (isFirebaseConfigured() && db) {
+  const local = getLocalUserPosts();
+  const approvedLocal = local.filter((item) => item.status === "approved");
+
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db) {
     try {
       const q = query(
         collection(db, COLLECTION_NAME),
         where("status", "==", "approved"),
         orderBy("createdAt", "desc")
       );
-      const snapshot = await getDocs(q);
+      const snapshot = await withTimeout(getDocs(q), 2500);
       const items: CommunityLore[] = [];
       snapshot.forEach((docSnap) => {
         items.push({ id: docSnap.id, ...(docSnap.data() as Omit<CommunityLore, "id">) });
       });
 
-      if (items.length > 0) return items;
+      if (items.length > 0) {
+        // Gabungkan karya firestore dengan karya lokal tanpa duplikat
+        const ids = new Set(items.map((i) => i.id));
+        const merged = [...approvedLocal.filter((l) => !ids.has(l.id)), ...items];
+        return merged;
+      }
     } catch (err) {
-      console.warn("Firestore read error, fallback ke cache lokal:", err);
+      console.warn("Firestore getApprovedLores warning, menggunakan local posts:", err);
+      firebaseKnownBroken = true;
     }
   }
 
-  const local = getLocalUserPosts();
-  return local.filter((item) => item.status === "approved");
+  return approvedLocal;
 }
 
 // 3. Ambil Semua Postingan Pengguna untuk Halaman Admin
 export async function getAllLoresForAdmin(): Promise<CommunityLore[]> {
-  if (isFirebaseConfigured() && db) {
+  const local = getLocalUserPosts();
+
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db) {
     try {
       const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
+      const snapshot = await withTimeout(getDocs(q), 2500);
       const items: CommunityLore[] = [];
       snapshot.forEach((docSnap) => {
         items.push({ id: docSnap.id, ...(docSnap.data() as Omit<CommunityLore, "id">) });
       });
-      return items;
+      if (items.length > 0) {
+        const ids = new Set(items.map((i) => i.id));
+        return [...local.filter((l) => !ids.has(l.id)), ...items];
+      }
     } catch (err) {
-      console.warn("Firestore read admin error, fallback ke cache lokal:", err);
+      console.warn("Firestore getAllLoresForAdmin warning:", err);
+      firebaseKnownBroken = true;
     }
   }
 
-  return getLocalUserPosts();
+  return local;
 }
 
 // 4. Update Status Postingan (Approve / Reject)
@@ -209,55 +300,40 @@ export async function updateLoreStatus(
   id: string,
   status: "approved" | "rejected"
 ): Promise<void> {
-  if (isFirebaseConfigured() && db && !id.startsWith("user-lore-") && !id.startsWith("theory-") && !id.startsWith("local-")) {
-    try {
-      const docRef = doc(db, COLLECTION_NAME, id);
-      await updateDoc(docRef, { status, updatedAt: Date.now() });
-      return;
-    } catch (err) {
-      console.warn("Firestore update status error:", err);
-    }
-  }
-
   const items = getLocalUserPosts();
   const updated = items.map((item) =>
     item.id === id ? { ...item, status, updatedAt: Date.now() } : item
   );
   saveLocalUserPosts(updated);
+
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db && !id.startsWith("user-lore-") && !id.startsWith("theory-") && !id.startsWith("local-")) {
+    try {
+      const docRef = doc(db, COLLECTION_NAME, id);
+      await withTimeout(updateDoc(docRef, { status, updatedAt: Date.now() }), 2500);
+    } catch (err) {
+      console.warn("Firestore update status error:", err);
+    }
+  }
 }
 
 // 5. Hapus Postingan
 export async function deleteLore(id: string): Promise<void> {
-  if (isFirebaseConfigured() && db && !id.startsWith("user-lore-") && !id.startsWith("theory-") && !id.startsWith("local-")) {
+  const items = getLocalUserPosts();
+  const updated = items.filter((item) => item.id !== id);
+  saveLocalUserPosts(updated);
+
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db && !id.startsWith("user-lore-") && !id.startsWith("theory-") && !id.startsWith("local-")) {
     try {
       const docRef = doc(db, COLLECTION_NAME, id);
-      await deleteDoc(docRef);
-      return;
+      await withTimeout(deleteDoc(docRef), 2500);
     } catch (err) {
       console.warn("Firestore delete error:", err);
     }
   }
-
-  const items = getLocalUserPosts();
-  const updated = items.filter((item) => item.id !== id);
-  saveLocalUserPosts(updated);
 }
 
 // 6. Like Postingan
 export async function likeLore(id: string): Promise<number> {
-  if (isFirebaseConfigured() && db && !id.startsWith("user-lore-") && !id.startsWith("theory-") && !id.startsWith("local-")) {
-    try {
-      const docRef = doc(db, COLLECTION_NAME, id);
-      await updateDoc(docRef, { likesCount: increment(1) });
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        return (snap.data().likesCount as number) || 1;
-      }
-    } catch (err) {
-      console.warn("Firestore like error:", err);
-    }
-  }
-
   const items = getLocalUserPosts();
   let newLikes = 1;
   const updated = items.map((item) => {
@@ -268,57 +344,69 @@ export async function likeLore(id: string): Promise<number> {
     return item;
   });
   saveLocalUserPosts(updated);
+
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db && !id.startsWith("user-lore-") && !id.startsWith("theory-") && !id.startsWith("local-")) {
+    try {
+      const docRef = doc(db, COLLECTION_NAME, id);
+      await withTimeout(updateDoc(docRef, { likesCount: increment(1) }), 2500);
+    } catch (err) {
+      console.warn("Firestore like error:", err);
+    }
+  }
+
   return newLikes;
 }
 
-// 7. Ambil Detail Lore berdasarkan Slug (Mencari di Firestore, User Lores, & Global Theories)
+// 7. Ambil Detail Lore berdasarkan Slug (Mencari di Local, Global Theories, & Firestore)
 export async function getLoreBySlug(slug: string): Promise<CommunityLore | null> {
-  // Cek Firestore terlebih dahulu
-  if (isFirebaseConfigured() && db) {
+  // 1. Cek di karya user lokal dulu (0ms - instan)
+  const local = getLocalUserPosts();
+  const foundUser = local.find((item) => item.slug === slug);
+  if (foundUser) return foundUser;
+
+  // 2. Cek di arsip Teori Global (0ms - instan)
+  const foundGlobal = GLOBAL_COMMUNITY_THEORIES.find((item) => item.slug === slug);
+  if (foundGlobal) return foundGlobal;
+
+  // 3. Cek Firestore jika belum ditemukan secara lokal
+  if (!firebaseKnownBroken && isFirebaseConfigured() && db) {
     try {
       const q = query(
         collection(db, COLLECTION_NAME),
         where("slug", "==", slug)
       );
-      const snapshot = await getDocs(q);
+      const snapshot = await withTimeout(getDocs(q), 2500);
       if (!snapshot.empty) {
         const first = snapshot.docs[0];
         return { id: first.id, ...(first.data() as Omit<CommunityLore, "id">) };
       }
     } catch (err) {
       console.warn("Firestore getLoreBySlug error:", err);
+      firebaseKnownBroken = true;
     }
   }
 
-  // Cek di arsip Teori Global
-  const foundGlobal = GLOBAL_COMMUNITY_THEORIES.find((item) => item.slug === slug);
-  if (foundGlobal) return foundGlobal;
-
-  // Cek di karya user lokal
-  const userItems = getLocalUserPosts();
-  const foundUser = userItems.find((item) => item.slug === slug);
-  return foundUser || null;
+  return null;
 }
 
-// 8. Upload Gambar Sampul (Firebase Storage / Base64 fallback)
+// 8. Upload Gambar Sampul (Firebase Storage / Kompresi Base64 fallback)
 export async function uploadCoverImage(file: File): Promise<string> {
-  if (isFirebaseConfigured() && storage) {
+  // 1. Coba upload ke Firebase Storage jika tersedia & aktif
+  if (!firebaseKnownBroken && isFirebaseConfigured() && storage) {
     try {
       const ext = file.name.split(".").pop() || "jpg";
       const fileName = `covers/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
       const storageRef = ref(storage, fileName);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(snapshot.ref);
-      return downloadUrl;
+      const snapshot = await withTimeout(uploadBytes(storageRef, file), 2500);
+      const downloadUrl = await withTimeout(getDownloadURL(snapshot.ref), 2500);
+      if (downloadUrl) return downloadUrl;
     } catch (err) {
-      console.warn("Firebase Storage upload error, converting to base64:", err);
+      console.warn("Firebase Storage upload error/timeout, beralih ke kompresi Data URL:", err);
+      firebaseKnownBroken = true;
     }
   }
 
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (e) => reject(e);
-    reader.readAsDataURL(file);
-  });
+  // 2. Fallback cepat: kompresi gambar menjadi Data URL ringkas (maks 1000px lebar, 0.75 JPEG)
+  // Memastikan gambar dapat langsung ditampilkan dan aman di localStorage
+  return compressImageToDataUrl(file);
 }

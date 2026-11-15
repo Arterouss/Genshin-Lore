@@ -11,6 +11,17 @@ import {
   increment,
 } from "firebase/firestore";
 
+let commentsFirebaseBroken = false;
+
+function withTimeout<T>(promise: Promise<T>, ms = 2500): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Koneksi komentar timeout (${ms}ms)`)), ms)
+    ),
+  ]);
+}
+
 // Seed komentar awal agar kolom diskusi tidak kosong melompong saat pertama dibuka
 const DEFAULT_LORE_COMMENTS: Record<string, CommentItem[]> = {
   "default": [
@@ -51,14 +62,30 @@ function getLocalKey(storySlug: string): string {
 }
 
 export async function getCommentsBySlug(storySlug: string): Promise<CommentItem[]> {
-  // 1. Coba ambil dari Firebase Firestore jika terkonfigurasi
-  if (typeof window !== "undefined" && isFirebaseConfigured() && db) {
+  // 1. Ambil dari LocalStorage terlebih dahulu (0ms respons cepat)
+  let localComments: CommentItem[] = [];
+  if (typeof window !== "undefined") {
+    try {
+      const saved = localStorage.getItem(getLocalKey(storySlug));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localComments = parsed;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // 2. Coba sinkronisasi dari Firebase Firestore jika terkonfigurasi & belum broken
+  if (typeof window !== "undefined" && !commentsFirebaseBroken && isFirebaseConfigured() && db) {
     try {
       const q = query(
         collection(db, "lore_comments"),
         where("storySlug", "==", storySlug)
       );
-      const snapshot = await getDocs(q);
+      const snapshot = await withTimeout(getDocs(q), 2000);
       if (!snapshot.empty) {
         const firestoreList: CommentItem[] = [];
         snapshot.forEach((d) => {
@@ -67,26 +94,20 @@ export async function getCommentsBySlug(storySlug: string): Promise<CommentItem[
         firestoreList.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        return firestoreList;
+
+        // Gabungkan dengan komentar lokal jika ada
+        const ids = new Set(firestoreList.map((c) => c.id));
+        const merged = [...localComments.filter((l) => !ids.has(l.id)), ...firestoreList];
+        return merged;
       }
     } catch (e) {
       console.warn("Gagal mengambil komentar dari Firestore, beralih ke local storage:", e);
+      commentsFirebaseBroken = true;
     }
   }
 
-  // 2. Ambil dari LocalStorage
-  if (typeof window !== "undefined") {
-    try {
-      const saved = localStorage.getItem(getLocalKey(storySlug));
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
+  if (localComments.length > 0) {
+    return localComments;
   }
 
   // 3. Fallback ke seed default yang disesuaikan
@@ -117,17 +138,7 @@ export async function postComment(
     replies: [],
   };
 
-  // Simpan ke Firestore jika tersedia
-  if (typeof window !== "undefined" && isFirebaseConfigured() && db) {
-    try {
-      const docRef = await addDoc(collection(db, "lore_comments"), newComment);
-      newComment.id = docRef.id;
-    } catch (e) {
-      console.warn("Firestore save failed, persisting locally:", e);
-    }
-  }
-
-  // Simpan ke LocalStorage
+  // 1. Simpan ke LocalStorage langsung (0ms)
   if (typeof window !== "undefined") {
     try {
       const current = await getCommentsBySlug(storySlug);
@@ -135,6 +146,19 @@ export async function postComment(
       localStorage.setItem(getLocalKey(storySlug), JSON.stringify(updated));
     } catch (e) {
       console.error("LocalStorage save error:", e);
+    }
+  }
+
+  // 2. Simpan ke Firestore jika tersedia di background dengan timeout
+  if (typeof window !== "undefined" && !commentsFirebaseBroken && isFirebaseConfigured() && db) {
+    try {
+      const docRef = await withTimeout(addDoc(collection(db, "lore_comments"), newComment), 2000);
+      if (docRef?.id) {
+        newComment.id = docRef.id;
+      }
+    } catch (e) {
+      console.warn("Firestore save failed, data tersimpan aman secara lokal:", e);
+      commentsFirebaseBroken = true;
     }
   }
 
@@ -157,6 +181,7 @@ export async function postReply(
     likesCount: 0,
   };
 
+  // 1. Perbarui LocalStorage langsung
   if (typeof window !== "undefined") {
     try {
       const current = await getCommentsBySlug(storySlug);
@@ -175,19 +200,23 @@ export async function postReply(
     }
   }
 
-  // Jika Firestore aktif
-  if (typeof window !== "undefined" && isFirebaseConfigured() && db) {
+  // 2. Sinkronkan ke Firestore jika aktif
+  if (typeof window !== "undefined" && !commentsFirebaseBroken && isFirebaseConfigured() && db) {
     try {
       const commentRef = doc(db, "lore_comments", commentId);
       const current = await getCommentsBySlug(storySlug);
       const found = current.find((c) => c.id === commentId);
       if (found) {
-        await updateDoc(commentRef, {
-          replies: [...(found.replies || []), newReply],
-        });
+        await withTimeout(
+          updateDoc(commentRef, {
+            replies: [...(found.replies || []), newReply],
+          }),
+          2000
+        );
       }
     } catch (e) {
       console.warn("Firestore update reply failed:", e);
+      commentsFirebaseBroken = true;
     }
   }
 
@@ -213,15 +242,18 @@ export async function likeCommentItem(
     }
   }
 
-  if (typeof window !== "undefined" && isFirebaseConfigured() && db) {
+  if (typeof window !== "undefined" && !commentsFirebaseBroken && isFirebaseConfigured() && db) {
     try {
       const commentRef = doc(db, "lore_comments", commentId);
-      await updateDoc(commentRef, {
-        likesCount: increment(1),
-      });
+      await withTimeout(
+        updateDoc(commentRef, {
+          likesCount: increment(1),
+        }),
+        2000
+      );
     } catch (e) {
       console.warn("Firestore like increment failed:", e);
+      commentsFirebaseBroken = true;
     }
   }
 }
-

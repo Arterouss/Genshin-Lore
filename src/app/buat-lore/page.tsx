@@ -12,6 +12,8 @@ import {
   PenLine,
   ArrowLeft,
   Upload,
+  Loader2,
+  BookOpen,
 } from "lucide-react";
 import { createCommunityLore, uploadCoverImage } from "@/lib/community";
 
@@ -42,14 +44,15 @@ export default function BuatLorePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submittedSlug, setSubmittedSlug] = useState("");
 
   // Handle upload file gambar
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 3 * 1024 * 1024) {
-      setErrorMsg("Ukuran gambar terlalu besar! Maksimal 3 MB.");
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg("Ukuran gambar terlalu besar! Maksimal 5 MB.");
       return;
     }
 
@@ -81,8 +84,8 @@ export default function BuatLorePage() {
     setErrorMsg("");
 
     // Validasi Form
-    if (title.trim().length < 10) {
-      setErrorMsg("Judul minimal 10 karakter.");
+    if (title.trim().length < 5) {
+      setErrorMsg("Judul naskah minimal 5 karakter.");
       return;
     }
     if (authorName.trim().length < 2) {
@@ -90,23 +93,27 @@ export default function BuatLorePage() {
       return;
     }
     if (!topic.trim()) {
-      setErrorMsg("Topik teori/lore wajib diisi (bebas, misal: 'Lore Naga Purba').");
+      setErrorMsg("Topik teori/lore wajib diisi (misal: 'Lore Naga Purba').");
       return;
     }
-    if (content.trim().length < 150) {
-      setErrorMsg("Isi naskah minimal 150 karakter agar cerita bermakna dan lengkap.");
+    if (content.trim().length < 50) {
+      setErrorMsg("Isi naskah minimal 50 karakter agar cerita bermakna dan berbobot.");
       return;
     }
 
-    // Rate-limit anti-spam sederhana (cooldown 60 detik)
-    const lastSubmit = localStorage.getItem("teyvat_last_submit_time");
-    if (lastSubmit) {
-      const diff = Date.now() - parseInt(lastSubmit, 10);
-      if (diff < 60000) {
-        const remaining = Math.ceil((60000 - diff) / 1000);
-        setErrorMsg(`Tunggu ${remaining} detik lagi sebelum mengirim postingan berikutnya (Anti-Spam).`);
-        return;
+    // Cooldown anti-spam ramah (5 detik)
+    try {
+      const lastSubmit = localStorage.getItem("teyvat_last_submit_time");
+      if (lastSubmit) {
+        const diff = Date.now() - parseInt(lastSubmit, 10);
+        if (diff < 5000) {
+          const remaining = Math.ceil((5000 - diff) / 1000);
+          setErrorMsg(`Harap tunggu ${remaining} detik sebelum mengirim naskah berikutnya.`);
+          return;
+        }
       }
+    } catch {
+      // ignore
     }
 
     setIsSubmitting(true);
@@ -133,7 +140,7 @@ export default function BuatLorePage() {
         ? sanitizeInput(summary)
         : cleanedContent.slice(0, 180) + "...";
 
-      await createCommunityLore({
+      const result = await createCommunityLore({
         title: cleanedTitle,
         slug: "", // akan di-generate oleh createCommunityLore
         authorName: cleanedAuthor,
@@ -144,9 +151,15 @@ export default function BuatLorePage() {
         tags: tags.length > 0 ? tags : [cleanedTopic],
       });
 
-      localStorage.setItem("teyvat_last_submit_time", Date.now().toString());
+      setSubmittedSlug(result.slug);
+      try {
+        localStorage.setItem("teyvat_last_submit_time", Date.now().toString());
+      } catch {
+        // ignore
+      }
       setIsSuccess(true);
     } catch (err: unknown) {
+      console.error("Gagal mengirim postingan:", err);
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
       setErrorMsg("Gagal mengirim postingan: " + message);
     } finally {
@@ -181,38 +194,49 @@ export default function BuatLorePage() {
         </h1>
         <p className="text-sm text-parchment-dim max-w-2xl leading-relaxed">
           Punya teori tentang Naga Purba, rahasia Celestia, atau sejarah masa lalu suatu karakter?
-          Tulis naskahmu di sini. Setiap naskah akan diverifikasi oleh Admin demi menjaga kualitas
-          arsip sebelum dipublikasikan untuk dibaca seluruh pengelana!
+          Tulis naskahmu di sini. Setiap naskah langsung tersimpan aman ke dalam arsip komunitas
+          dan dapat dibaca oleh seluruh pengelana!
         </p>
       </div>
 
       {/* Pesan Sukses */}
       {isSuccess ? (
-        <div className="p-8 rounded-2xl bg-celestia-900/80 border border-emerald-500/30 text-center animate-fade-in">
+        <div className="p-8 sm:p-10 rounded-2xl bg-celestia-900/90 border border-emerald-500/40 text-center animate-fade-in shadow-2xl">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
             <CheckCircle2 size={36} />
           </div>
           <h2
-            className="text-2xl font-bold text-parchment mb-2"
+            className="text-2xl sm:text-3xl font-bold text-parchment mb-2"
             style={{ fontFamily: "Cinzel, Georgia, serif" }}
           >
-            Naskah Berhasil Dikirim!
+            Naskah Berhasil Diterbitkan!
           </h2>
           <p className="text-sm text-parchment-dim max-w-lg mx-auto mb-6 leading-relaxed">
-            Terima kasih atas kontribusi pengetahuanmu! Naskah telah masuk ke antrean verifikasi
-            moderator. Setelah disetujui, ceritamu akan langsung tayang di etalase{" "}
-            <span className="text-gold-300">Community Lore</span>.
+            Terima kasih atas kontribusi pengetahuanmu,{" "}
+            <span className="text-gold-300 font-semibold">{authorName || "Pengelana"}</span>! Teori
+            dan naskah lore kamu telah tersimpan aman dan langsung tayang di etalase{" "}
+            <span className="text-gold-300">Community Lore</span> untuk dinikmati seluruh penjelajah Teyvat.
           </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+
+          <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
+            {submittedSlug && (
+              <Link
+                href={`/community?read=${submittedSlug}&tab=community`}
+                className="px-6 py-2.5 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 transition-colors shadow-lg shadow-gold-400/20 text-sm flex items-center gap-2"
+              >
+                <BookOpen size={16} /> Baca Teori Saya Sekarang
+              </Link>
+            )}
             <Link
-              href="/community"
-              className="px-6 py-2.5 rounded-xl bg-gold-400 text-celestia-950 font-semibold hover:bg-gold-300 transition-colors shadow-lg shadow-gold-400/20 text-sm"
+              href="/community?tab=community"
+              className="px-5 py-2.5 rounded-xl bg-celestia-800 text-parchment border border-gold-300/30 hover:border-gold-300/60 transition-colors text-sm"
             >
-              Lihat Halaman Komunitas
+              Lihat di Etalase Komunitas
             </Link>
             <button
               onClick={() => {
                 setIsSuccess(false);
+                setSubmittedSlug("");
                 setTitle("");
                 setTopic("");
                 setContent("");
@@ -222,9 +246,9 @@ export default function BuatLorePage() {
                 setPreviewCover("");
                 setCoverUrl("");
               }}
-              className="px-5 py-2.5 rounded-xl bg-celestia-800 text-parchment border border-gold-300/20 hover:border-gold-300/40 text-sm transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-celestia-850 text-parchment-dim hover:text-parchment border border-white/10 text-sm transition-colors"
             >
-              Tulis Cerita Lainnya
+              Tulis Naskah Lain
             </button>
           </div>
         </div>
@@ -265,7 +289,7 @@ export default function BuatLorePage() {
               </button>
             </div>
             <span className="text-xs text-parchment-muted hidden sm:inline">
-              Mendukung format Markdown (*miring*, **tebal**, # judul)
+              Mendukung format Markdown (*miring*, **tebal**, ### sub-judul)
             </span>
           </div>
 
@@ -293,14 +317,14 @@ export default function BuatLorePage() {
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold uppercase tracking-wider text-parchment-dim">
-                    Nama / Nickname <span className="text-gold-400">*</span>
+                    Nama / Nickname Penulis <span className="text-gold-400">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    placeholder="Misal: Traveler_07"
+                    placeholder="Misal: Pengelana_Teyvat"
                     className="w-full px-4 py-3 rounded-xl bg-celestia-900/80 border border-gold-300/20 text-parchment placeholder-parchment-muted/50 focus:outline-none focus:border-gold-300 transition-colors text-sm"
                   />
                 </div>
@@ -352,7 +376,7 @@ export default function BuatLorePage() {
                     <ImageIcon size={14} className="text-gold-300" />
                     Gambar Sampul (Opsional)
                   </label>
-                  <span className="text-[11px] text-parchment-muted">Maksimal 3 MB</span>
+                  <span className="text-[11px] text-parchment-muted">Maksimal 5 MB</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -362,7 +386,7 @@ export default function BuatLorePage() {
                       size={24}
                       className="text-gold-300/60 group-hover:text-gold-300 transition-colors mb-1"
                     />
-                    <span className="text-xs text-parchment group-hover:text-gold-200">
+                    <span className="text-xs text-parchment group-hover:text-gold-200 text-center truncate max-w-[200px]">
                       {coverFile ? coverFile.name : "Pilih Berkas Gambar"}
                     </span>
                     <span className="text-[10px] text-parchment-muted mt-0.5">
@@ -378,7 +402,7 @@ export default function BuatLorePage() {
 
                   {/* Pilihan 2: Paste URL */}
                   <div className="flex flex-col justify-center space-y-1.5">
-                    <span className="text-[11px] text-parchment-muted">Atau masukkan URL gambar:</span>
+                    <span className="text-[11px] text-parchment-muted">Atau masukkan URL gambar langsung:</span>
                     <input
                       type="url"
                       value={coverUrl}
@@ -420,7 +444,7 @@ export default function BuatLorePage() {
                 <label className="text-xs font-semibold uppercase tracking-wider text-parchment-dim flex items-center justify-between">
                   <span>Intisari / Sinopsis Singkat (Opsional)</span>
                   <span className="text-[11px] text-parchment-muted font-normal">
-                    Ditampilkan di kartu preview
+                    Ditampilkan di kartu cuplikan
                   </span>
                 </label>
                 <input
@@ -435,7 +459,7 @@ export default function BuatLorePage() {
               {/* Tagar */}
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold uppercase tracking-wider text-parchment-dim">
-                  Tagar (Pisahkan dengan koma)
+                  Tagar (Pisahkan dengan tanda koma)
                 </label>
                 <input
                   type="text"
@@ -450,14 +474,14 @@ export default function BuatLorePage() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold uppercase tracking-wider text-parchment-dim">
-                    Naskah Lengkap / Deskripsi Lore <span className="text-gold-400">*</span>
+                    Naskah Lengkap / Uraian Lore <span className="text-gold-400">*</span>
                   </label>
                   <span
                     className={`text-xs ${
-                      content.length >= 150 ? "text-emerald-400" : "text-amber-400"
+                      content.length >= 50 ? "text-emerald-400" : "text-amber-400"
                     }`}
                   >
-                    {content.length} karakter (Min. 150)
+                    {content.length} karakter (Min. 50, disarankan 150+)
                   </span>
                 </div>
                 <textarea
@@ -473,15 +497,24 @@ export default function BuatLorePage() {
               {/* Tombol Kirim */}
               <div className="pt-4 border-t border-gold-300/10 flex items-center justify-between flex-wrap gap-4">
                 <p className="text-xs text-parchment-muted">
-                  🛡️ Dilindungi verifikasi moderator untuk menjaga komunitas tetap sehat & bebas spam.
+                  🛡️ Naskah akan langsung tersimpan aman dan diterbitkan di etalase Community Lore.
                 </p>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="px-8 py-3 rounded-xl bg-gold-400 text-celestia-950 font-bold hover:bg-gold-300 transition-all shadow-lg shadow-gold-400/20 flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Send size={16} />
-                  {isSubmitting ? "Mengirim Naskah..." : "Kirim Naskah untuk Ditinjau"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Menyimpan & Menerbitkan...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>Kirim & Terbitkan Naskah</span>
+                    </>
+                  )}
                 </button>
               </div>
             </>
@@ -528,4 +561,3 @@ export default function BuatLorePage() {
     </div>
   );
 }
-
