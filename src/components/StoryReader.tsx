@@ -92,6 +92,13 @@ export default function StoryReader({ story }: { story: StoryFull }) {
               src={story.coverImage}
               alt={story.character || story.title}
               className="w-full h-full object-cover object-top"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (story.character && !target.src.includes("gi.yatta.moe")) {
+                  const charClean = story.character.replace(/[\s'-]/g, "");
+                  target.src = `https://gi.yatta.moe/assets/UI/UI_AvatarIcon_${charClean}.png`;
+                }
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-celestia-900 via-transparent to-black/30 pointer-events-none" />
             {story.rarity && (

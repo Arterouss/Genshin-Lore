@@ -60,6 +60,13 @@ export default function StoryCard({ story }: { story: StoryMeta }) {
             alt={story.character || story.title}
             className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (story.character && !target.src.includes("gi.yatta.moe")) {
+                const charClean = story.character.replace(/[\s'-]/g, "");
+                target.src = `https://gi.yatta.moe/assets/UI/UI_AvatarIcon_${charClean}.png`;
+              }
+            }}
           />
           {/* Bottom gradient fade into card body */}
           <div className="absolute inset-0 bg-gradient-to-t from-scroll-800 via-transparent to-black/40 pointer-events-none" />

@@ -174,6 +174,30 @@ export default function DatabasePage() {
     setVisibleCount(36);
   };
 
+  // Dynamic Image Fallback Handler for CDN resilience
+  const handleItemImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+    fallbackIcon = "UI_ItemIcon_108001"
+  ) => {
+    const target = e.currentTarget;
+    const step = target.getAttribute("data-fallback-step");
+    if (step === "2") {
+      return;
+    }
+    if (!step) {
+      target.setAttribute("data-fallback-step", "1");
+      if (target.src.includes("gi.yatta.moe")) {
+        target.src = target.src.replace("https://gi.yatta.moe/assets/UI/", "https://enka.network/ui/");
+        return;
+      } else if (target.src.includes("enka.network")) {
+        target.src = target.src.replace("https://enka.network/ui/", "https://gi.yatta.moe/assets/UI/");
+        return;
+      }
+    }
+    target.setAttribute("data-fallback-step", "2");
+    target.src = `https://gi.yatta.moe/assets/UI/${fallbackIcon}.png`;
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* ── Page Header ── */}
@@ -498,6 +522,12 @@ export default function DatabasePage() {
                   alt={c.name}
                   className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (c.iconUrl && target.src !== c.iconUrl) {
+                      target.src = c.iconUrl;
+                    }
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-scroll-800 via-transparent to-black/40 pointer-events-none" />
 
@@ -580,6 +610,7 @@ export default function DatabasePage() {
                       alt={w.name}
                       className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                       loading="lazy"
+                      onError={(e) => handleItemImageError(e, "UI_EquipIcon_Sword_Blunt")}
                     />
                   </div>
                 ) : (
@@ -669,6 +700,7 @@ export default function DatabasePage() {
                     alt={food.name}
                     className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                     loading="lazy"
+                    onError={(e) => handleItemImageError(e, "UI_ItemIcon_108001")}
                   />
                 </div>
 
@@ -744,6 +776,7 @@ export default function DatabasePage() {
                       alt={item.name}
                       className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                       loading="lazy"
+                      onError={(e) => handleItemImageError(e, "UI_ItemIcon_100058")}
                     />
                   </div>
                 ) : (
@@ -815,6 +848,7 @@ export default function DatabasePage() {
                       alt={m.name}
                       className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                       loading="lazy"
+                      onError={(e) => handleItemImageError(e, "UI_ItemIcon_104104")}
                     />
                   </div>
                 ) : (
@@ -884,6 +918,8 @@ export default function DatabasePage() {
                       src={q.iconUrl}
                       alt={q.name}
                       className="w-full h-full object-contain"
+                      loading="lazy"
+                      onError={(e) => handleItemImageError(e, "UI_ItemIcon_100411")}
                     />
                   </div>
                 )}
@@ -986,6 +1022,12 @@ export default function DatabasePage() {
                         src={`/images/characters/${c.id}.png`}
                         alt={c.name}
                         className="w-full h-full object-cover object-top"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (c.iconUrl && target.src !== c.iconUrl) {
+                            target.src = c.iconUrl;
+                          }
+                        }}
                       />
                       <div className="absolute top-2 left-2 z-10">
                         <span
@@ -1080,6 +1122,7 @@ export default function DatabasePage() {
                           src={w.iconUrl}
                           alt={w.name}
                           className="w-full h-full object-contain"
+                          onError={(e) => handleItemImageError(e, "UI_EquipIcon_Sword_Blunt")}
                         />
                       </div>
                     )}
@@ -1175,6 +1218,7 @@ export default function DatabasePage() {
                         src={f.iconUrl}
                         alt={f.name}
                         className="w-full h-full object-contain"
+                        onError={(e) => handleItemImageError(e, "UI_ItemIcon_108001")}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -1230,7 +1274,12 @@ export default function DatabasePage() {
                             className="flex items-center gap-2 p-2 bg-celestia-950 rounded-lg border border-gold-300/10 text-xs text-parchment"
                           >
                             {ing.iconUrl && (
-                              <img src={ing.iconUrl} alt={ing.name} className="w-6 h-6 object-contain" />
+                              <img
+                                src={ing.iconUrl}
+                                alt={ing.name}
+                                className="w-6 h-6 object-contain"
+                                onError={(e) => handleItemImageError(e, "UI_ItemIcon_100058")}
+                              />
                             )}
                             <div className="truncate">
                               <span className="block truncate font-medium">{ing.name}</span>
@@ -1279,6 +1328,12 @@ export default function DatabasePage() {
                           src={item.iconUrl}
                           alt={item.name}
                           className="w-full h-full object-contain"
+                          onError={(e) =>
+                            handleItemImageError(
+                              e,
+                              modalItem.type === "materials" ? "UI_ItemIcon_104104" : "UI_ItemIcon_100058"
+                            )
+                          }
                         />
                       </div>
                     )}
@@ -1360,6 +1415,7 @@ export default function DatabasePage() {
                           src={q.iconUrl}
                           alt={q.name}
                           className="w-full h-full object-contain"
+                          onError={(e) => handleItemImageError(e, "UI_ItemIcon_100411")}
                         />
                       </div>
                     )}

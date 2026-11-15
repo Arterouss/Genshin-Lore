@@ -348,6 +348,9 @@ export default function AdminModerationPage() {
                             src={item.coverImageUrl}
                             alt={item.title}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop";
+                            }}
                           />
                         </div>
                       )}

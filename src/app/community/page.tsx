@@ -319,6 +319,9 @@ export default function CommunityPage() {
                       src={theory.coverImageUrl}
                       alt={theory.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop";
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-celestia-900 via-transparent to-transparent" />
                     <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-celestia-950/85 backdrop-blur-md text-gold-300 border border-gold-300/30 uppercase tracking-wider">
@@ -430,6 +433,9 @@ export default function CommunityPage() {
                           src={item.coverImageUrl}
                           alt={item.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            e.currentTarget.src = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop";
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-celestia-900 via-transparent to-transparent" />
                         <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-celestia-950/85 backdrop-blur-md text-gold-300 border border-gold-300/30 uppercase tracking-wider">
@@ -581,6 +587,9 @@ export default function CommunityPage() {
                   src={selectedLore.coverImageUrl}
                   alt={selectedLore.title}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop";
+                  }}
                 />
               </div>
             )}
