@@ -17,7 +17,8 @@ import {
   Compass,
   Scroll,
   Headphones,
-  UserCheck
+  UserCheck,
+  ExternalLink
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -30,14 +31,12 @@ export default function Navbar() {
   const storyDropdownRef = useRef<HTMLDivElement>(null);
   const charDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Tautan donasi
-  const donationUrl = process.env.NEXT_PUBLIC_DONATION_URL?.trim();
+  // Tautan donasi resmi
+  const donationUrl = process.env.NEXT_PUBLIC_DONATION_URL?.trim() || "https://sociabuzz.com/yulverynth76";
 
   const handleDonateClick = (e: React.MouseEvent) => {
-    if (!donationUrl || donationUrl === "#") {
-      e.preventDefault();
-      setShowDonateModal(true);
-    }
+    e.preventDefault();
+    setShowDonateModal(true);
   };
 
   // Tutup dropdown ketika klik di luar
@@ -438,40 +437,65 @@ export default function Navbar() {
         )}
       </header>
 
-      {/* Modal Donasi Placeholder */}
+      {/* Modal Donasi Resmi */}
       {showDonateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-celestia-900 border border-gold-300/30 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+          <div className="bg-celestia-900 border border-gold-300/35 rounded-2xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl relative">
             <button
               onClick={() => setShowDonateModal(false)}
-              className="absolute top-4 right-4 text-parchment-muted hover:text-parchment p-1 rounded-lg"
+              className="absolute top-4 right-4 text-parchment-muted hover:text-parchment p-1 rounded-lg hover:bg-celestia-800 transition-colors"
             >
               <X size={20} />
             </button>
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-300">
-              <Heart size={28} className="fill-rose-400" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center text-rose-300 shadow-inner">
+              <Heart size={32} className="fill-rose-400" />
             </div>
             <h3
-              className="text-xl font-bold text-gold-200 mb-2"
+              className="text-2xl font-bold text-gold-200 mb-2"
               style={{ fontFamily: "Cinzel, Georgia, serif" }}
             >
               Dukung Teyvat Lore
             </h3>
-            <p className="text-xs text-parchment-dim leading-relaxed mb-6">
+            <p className="text-xs sm:text-sm text-parchment-dim leading-relaxed mb-5">
               Teyvat Lore adalah proyek arsip komunitas gratis tanpa iklan. Dukungan Anda membantu kami membiayai server, CDN, dan riset naskah lore Genshin Impact dalam bahasa Indonesia.
             </p>
-            <div className="p-4 rounded-xl bg-celestia-950 border border-gold-300/20 mb-6 text-xs text-parchment space-y-2">
-              <p className="text-gold-300 font-semibold">Tautan Donasi Resmi:</p>
-              <p className="text-parchment-dim break-all">
-                Saweria / Trakteer / KaryaKarsa dapat diatur melalui variabel lingkungan <code className="text-gold-200">NEXT_PUBLIC_DONATION_URL</code> di file <code className="text-gold-200">.env.local</code>.
+
+            <div className="p-4 rounded-xl bg-celestia-950 border border-gold-300/25 mb-6 text-left space-y-2">
+              <p className="text-xs uppercase font-bold text-gold-300 tracking-wider flex items-center gap-1.5">
+                <Sparkles size={13} />
+                Tautan Donasi Resmi:
               </p>
+              <a
+                href={donationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs sm:text-sm text-gold-200 hover:text-gold-100 font-mono font-semibold break-all hover:underline flex items-center justify-between gap-2 p-2.5 rounded-lg bg-gold-400/10 border border-gold-400/25 transition-colors"
+              >
+                <span>{donationUrl}</span>
+                <ExternalLink size={14} className="shrink-0 text-gold-300" />
+              </a>
             </div>
-            <button
-              onClick={() => setShowDonateModal(false)}
-              className="w-full py-2.5 rounded-xl bg-gold-400 hover:bg-gold-300 text-celestia-950 font-bold text-xs transition-colors"
-            >
-              Tutup
-            </button>
+
+            <div className="flex flex-col gap-2.5">
+              <a
+                href={donationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setShowDonateModal(false)}
+                className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 via-rose-400 to-rose-500 hover:from-rose-400 hover:to-rose-300 text-celestia-950 font-bold text-sm transition-all shadow-lg shadow-rose-500/20 hover:scale-[1.02] active:scale-95"
+              >
+                <Heart size={16} className="fill-celestia-950" />
+                <span>☕ Lanjutkan ke SociaBuzz</span>
+                <ExternalLink size={15} />
+              </a>
+
+              <button
+                onClick={() => setShowDonateModal(false)}
+                className="w-full py-2 rounded-xl bg-celestia-800 hover:bg-celestia-750 text-parchment-dim hover:text-parchment text-xs font-semibold transition-colors"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}

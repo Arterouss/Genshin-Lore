@@ -596,6 +596,16 @@ export default function HomePage() {
                 + Tulis Teori Baru
               </Link>
 
+              <a
+                href="https://sociabuzz.com/yulverynth76"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border border-rose-500/50 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-bold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 active:scale-95 shadow-lg"
+              >
+                <Heart size={15} className="fill-rose-400 text-rose-400" />
+                <span>☕ Donasi / Dukung Server</span>
+              </a>
+
               <Link
                 href="/tentang"
                 className="inline-flex items-center gap-2 bg-celestia-800 hover:bg-celestia-750 text-gold-300 border border-gold-300/30 font-bold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 active:scale-95"
@@ -627,10 +637,19 @@ export default function HomePage() {
 
           <div className="flex flex-wrap justify-center gap-6 text-xs text-parchment-muted mb-6">
             <Link href="/" className="hover:text-gold-300 transition-colors">Beranda</Link>
-            <Link href="/database" className="hover:text-gold-300 transition-colors">Database (126 Char)</Link>
+            <Link href="/database" className="hover:text-gold-300 transition-colors">Database (126 Char &amp; 256 Senjata)</Link>
             <Link href="/katalog" className="hover:text-gold-300 transition-colors">Katalog Cerita</Link>
             <Link href="/community" className="hover:text-gold-300 transition-colors">Komunitas</Link>
             <Link href="/tentang" className="hover:text-gold-300 transition-colors">Tentang Proyek</Link>
+            <a
+              href="https://sociabuzz.com/yulverynth76"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-rose-400 hover:text-rose-300 transition-colors flex items-center gap-1 font-semibold"
+            >
+              <Heart size={12} className="fill-rose-400" />
+              <span>Donasi (SociaBuzz)</span>
+            </a>
           </div>
 
           <p className="text-[11px] text-parchment-muted/60">
